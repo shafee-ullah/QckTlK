@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+rules.mdc
 
 # Editor directories and files
 .vscode/*
