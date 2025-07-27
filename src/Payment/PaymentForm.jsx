@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  CardElement,
-  useStripe,
-  useElements
-} from "@stripe/react-stripe-js";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import useAuth from "../../hooks/useAuth";
+import useAxios from "../hooks/useAxios";
+import { useNavigate } from "react-router";
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
+  const axiosSecure = useAxios();
+  const navigate = useNavigate();
 
   const [clientSecret, setClientSecret] = useState("");
   const [processing, setProcessing] = useState(false);
@@ -47,15 +47,14 @@ const PaymentForm = () => {
     setError("");
     setSuccess("");
 
-    const { paymentMethod, error: pmError } =
-      await stripe.createPaymentMethod({
-        type: "card",
-        card,
-        billing_details: {
-          name: user?.displayName || "Anonymous",
-          email: user?.email || "No Email",
-        },
-      });
+    const { paymentMethod, error: pmError } = await stripe.createPaymentMethod({
+      type: "card",
+      card,
+      billing_details: {
+        name: user?.displayName || "Anonymous",
+        email: user?.email || "No Email",
+      },
+    });
 
     if (pmError) {
       setError(pmError.message);
@@ -75,8 +74,26 @@ const PaymentForm = () => {
     }
 
     if (paymentIntent.status === "succeeded") {
-      setSuccess("Payment successful!");
-      // Optional: save payment info to DB here
+      setSuccess("Payment successful! Upgrading your membership...");
+      try {
+        await axiosSecure.post("/api/users/upgrade", { email: user.email });
+        // Record payment
+        await axiosSecure.post("/api/payments", {
+          email: user.email,
+          amount,
+          status: paymentIntent.status,
+          paymentIntentId: paymentIntent.id,
+          date: new Date().toISOString(),
+        });
+        setSuccess(
+          "Payment successful! You are now a Gold member. Redirecting to dashboard..."
+        );
+        setTimeout(() => navigate("/dashboard"), 3000);
+      } catch (err) {
+        setError(
+          "Payment succeeded, but failed to upgrade membership or record payment."
+        );
+      }
     }
 
     setProcessing(false);
@@ -114,7 +131,17 @@ const PaymentForm = () => {
         </button>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        {success && <p className="text-green-500 text-sm">{success}</p>}
+        {success && (
+          <div className="text-green-500 text-sm flex flex-col items-center gap-2">
+            <span>{success}</span>
+            <button
+              className="btn-primary mt-2"
+              onClick={() => navigate("/dashboard")}
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
