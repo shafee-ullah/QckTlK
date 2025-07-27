@@ -76,11 +76,15 @@ const Register = () => {
 
       <div className="w-full max-w-md">
         {/* Card Container */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in-up">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-fade-in-up">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-8 py-6 text-white text-center">
-            <h1 className="text-3xl font-bold mb-2">Create Account</h1>
-            <p className="text-blue-100 text-sm">Join us and get started</p>
+          <div className="bg-white dark:bg-gray-800 px-8 py-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white text-center">
+              Create Account
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 text-sm text-center">
+              Join us and get started
+            </p>
           </div>
 
           {/* Form */}
@@ -88,7 +92,7 @@ const Register = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Name Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Full Name
                 </label>
                 <div className="relative">
@@ -104,7 +108,7 @@ const Register = () => {
                         message: "Name must be at least 2 characters",
                       },
                     })}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -117,7 +121,7 @@ const Register = () => {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Email Address
                 </label>
                 <div className="relative">
@@ -133,7 +137,7 @@ const Register = () => {
                         message: "Invalid email address",
                       },
                     })}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -146,7 +150,7 @@ const Register = () => {
 
               {/* Phone Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Phone Number
                 </label>
                 <div className="relative">
@@ -158,11 +162,11 @@ const Register = () => {
                     {...register("phone", {
                       required: "Phone number is required",
                       pattern: {
-                        value: /^[\+]?[1-9][\d]{0,15}$/,
+                        value: /^[+]?[1-9][0-9]{0,15}$/,
                         message: "Please enter a valid phone number",
                       },
                     })}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -175,7 +179,7 @@ const Register = () => {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Password
                 </label>
                 <div className="relative">
@@ -196,7 +200,7 @@ const Register = () => {
                           "Password must contain at least one uppercase letter, one lowercase letter, and one number",
                       },
                     })}
-                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
+                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Create a password"
                   />
                   <button
@@ -220,7 +224,7 @@ const Register = () => {
 
               {/* Confirm Password Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -234,7 +238,7 @@ const Register = () => {
                       validate: (value) =>
                         value === password || "Passwords do not match",
                     })}
-                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
+                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Confirm your password"
                   />
                   <button
@@ -270,7 +274,10 @@ const Register = () => {
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="terms" className="text-gray-700">
+                  <label
+                    htmlFor="terms"
+                    className="text-gray-700 dark:text-gray-200"
+                  >
                     I agree to the{" "}
                     <Link
                       to="/terms"
@@ -298,7 +305,7 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -318,7 +325,7 @@ const Register = () => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
+                  <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                     Or continue with
                   </span>
                 </div>
@@ -332,7 +339,7 @@ const Register = () => {
 
             {/* Login Link */}
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link
                   to="/login"

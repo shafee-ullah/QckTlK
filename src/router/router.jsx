@@ -5,6 +5,7 @@ import {
 import RootLayout from "../Layouts/RootLayout";
 import { Component } from "react";
 import Home from "../Pages/Home/Home";
+import PostDetails from "../Pages/PostDetails/PostDetails";
 import AuthLayout from "../Layouts/AuthLayout";
 import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
@@ -14,10 +15,14 @@ import Register from "../Pages/Authentication/Register";
       path: "/",
       Component:RootLayout,
       children:[
-        {
-          index:true,
-          Component: Home
-        },
+                        {
+                  index:true,
+                  Component: Home
+                },
+                {
+                  path: "/post/:id",
+                  Component: PostDetails
+                },
       ]
     },
 

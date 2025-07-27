@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
-import { Bell, Menu, X } from "lucide-react"; // make sure lucide-react is installed
+import { Bell, Menu, X } from "lucide-react";
 import qcktlkLogo from "../../assets/qcktlk.png";
 import useAuth from "../../hooks/useAuth";
-import { useTheme } from "../../contexts/AuthContext/Theme/ThemeProvider";
+import ThemeToggle from "../../components/ThemeToggle";
 
 const Navbar = () => {
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isDarkMode, toggleTheme } = useTheme();
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
@@ -16,11 +15,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo and Website Name */}
           <Link to="/" className="flex items-center">
-            <img
-              src={qcktlkLogo}
-              alt="QckTlk Logo"
-              className="h-8 w-8 mr-2"
-            />
+            <img src={qcktlkLogo} alt="QckTlk Logo" className="h-8 w-8 mr-2" />
             <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               QckTlk
             </span>
@@ -50,6 +45,9 @@ const Navbar = () => {
 
           {/* Right Side (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle Button */}
+            <ThemeToggle />
+
             {user ? (
               <img
                 src={user.photoURL}
@@ -64,10 +62,18 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Hamburger Menu (Mobile) */}
-          <div className="md:hidden">
+          {/* Mobile Right Side */}
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Theme Toggle Button (Mobile) */}
+            <ThemeToggle />
+
+            {/* Hamburger Menu (Mobile) */}
             <button onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>

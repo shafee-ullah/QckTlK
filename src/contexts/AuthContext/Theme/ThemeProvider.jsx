@@ -28,8 +28,10 @@ export const ThemeProvider = ({ children }) => {
     // Apply theme to document
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      console.log('Dark mode enabled');
     } else {
       document.documentElement.classList.remove('dark');
+      console.log('Light mode enabled');
     }
   }, [isDarkMode]);
 
