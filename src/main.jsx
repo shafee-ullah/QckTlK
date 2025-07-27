@@ -5,13 +5,16 @@ import App from "./App.jsx";
 import { RouterProvider } from "react-router";
 import { router } from "./router/router.jsx";
 import AuthProvider from "./contexts/AuthContext/AuthProvider";
+import ThemeProvider from "./contexts/AuthContext/Theme/ThemeProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <div className="min-h-screen font-urbanist ">
+    <ThemeProvider>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <div className="min-h-screen font-urbanist ">
+          <RouterProvider router={router} />
+        </div>
       </AuthProvider>
-    </div>
+    </ThemeProvider>
   </StrictMode>
 );

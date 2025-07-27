@@ -3,10 +3,12 @@ import { Link } from "react-router";
 import { Bell, Menu, X } from "lucide-react"; // make sure lucide-react is installed
 import qcktlkLogo from "../../assets/qcktlk.png";
 import useAuth from "../../hooks/useAuth";
+import { useTheme } from "../../contexts/AuthContext/Theme/ThemeProvider";
 
 const Navbar = () => {
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
