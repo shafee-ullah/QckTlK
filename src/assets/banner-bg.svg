@@ -1,0 +1,76 @@
+<svg width="1920" height="400" viewBox="0 0 1920 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradient -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Overlay gradient -->
+    <linearGradient id="overlayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <!-- Circle patterns -->
+    <radialGradient id="circleGradient1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+    </radialGradient>
+    
+    <radialGradient id="circleGradient2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="1920" height="400" fill="url(#mainGradient)"/>
+  
+  <!-- Overlay -->
+  <rect width="1920" height="400" fill="url(#overlayGradient)"/>
+  
+  <!-- Abstract geometric shapes representing community/forum -->
+  <!-- Large circles -->
+  <circle cx="200" cy="100" r="80" fill="url(#circleGradient1)" opacity="0.6"/>
+  <circle cx="1720" cy="300" r="120" fill="url(#circleGradient2)" opacity="0.4"/>
+  <circle cx="1600" cy="80" r="60" fill="url(#circleGradient1)" opacity="0.5"/>
+  
+  <!-- Connected dots representing forum discussions -->
+  <g opacity="0.7">
+    <circle cx="400" cy="200" r="3" fill="#60a5fa"/>
+    <circle cx="450" cy="180" r="3" fill="#60a5fa"/>
+    <circle cx="500" cy="220" r="3" fill="#60a5fa"/>
+    <circle cx="550" cy="160" r="3" fill="#60a5fa"/>
+    <circle cx="600" cy="240" r="3" fill="#60a5fa"/>
+    
+    <circle cx="1400" cy="150" r="3" fill="#a78bfa"/>
+    <circle cx="1450" cy="130" r="3" fill="#a78bfa"/>
+    <circle cx="1500" cy="170" r="3" fill="#a78bfa"/>
+    <circle cx="1550" cy="110" r="3" fill="#a78bfa"/>
+    <circle cx="1600" cy="190" r="3" fill="#a78bfa"/>
+  </g>
+  
+  <!-- Connection lines between dots -->
+  <g stroke="#60a5fa" stroke-width="1" opacity="0.4">
+    <line x1="400" y1="200" x2="450" y2="180"/>
+    <line x1="450" y1="180" x2="500" y2="220"/>
+    <line x1="500" y1="220" x2="550" y2="160"/>
+    <line x1="550" y1="160" x2="600" y2="240"/>
+  </g>
+  
+  <g stroke="#a78bfa" stroke-width="1" opacity="0.4">
+    <line x1="1400" y1="150" x2="1450" y2="130"/>
+    <line x1="1450" y1="130" x2="1500" y2="170"/>
+    <line x1="1500" y1="170" x2="1550" y2="110"/>
+    <line x1="1550" y1="110" x2="1600" y2="190"/>
+  </g>
+  
+  <!-- Abstract shapes representing forum categories -->
+  <g opacity="0.3">
+    <rect x="800" y="120" width="60" height="60" rx="8" fill="#60a5fa" transform="rotate(45 830 150)"/>
+    <rect x="1000" y="250" width="80" height="40" rx="6" fill="#a78bfa" transform="rotate(-30 1040 270)"/>
+    <rect x="1200" y="100" width="50" height="50" rx="25" fill="#60a5fa"/>
+  </g>
+</svg> 
