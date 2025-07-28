@@ -8,6 +8,7 @@ import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
 import CreatePost from "../Pages/CreatePost";
 import Dashboard from "../Pages/Dashboard";
+import Payment from "../Payment/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/membership",
+        element: <Payment />,
       },
     ],
   },

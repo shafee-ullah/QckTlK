@@ -35,6 +35,14 @@ const Navbar = () => {
             >
               Membership
             </Link>
+            {user && (
+              <Link
+                to="/dashboard"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+              >
+                My Dashboard
+              </Link>
+            )}
             <Link
               to="/notifications"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
@@ -97,6 +105,15 @@ const Navbar = () => {
             >
               Membership
             </Link>
+            {user && (
+              <Link
+                to="/dashboard"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
+                onClick={() => setMenuOpen(false)}
+              >
+                My Dashboard
+              </Link>
+            )}
             <Link
               to="/notifications"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600"

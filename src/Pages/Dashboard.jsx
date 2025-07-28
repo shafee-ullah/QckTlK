@@ -793,7 +793,9 @@ const CommentsTab = () => {
   const handleDeleteComment = async (commentId, postId) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
-        await axiosSecure.delete(`/posts/${postId}/comments/${commentId}`);
+        await axiosSecure.delete(`/posts/${postId}/comments/${commentId}`, {
+          data: { authorName: user.email },
+        });
         setComments(comments.filter((comment) => comment._id !== commentId));
       } catch {
         alert("Failed to delete comment");
@@ -886,9 +888,12 @@ const CommentsTab = () => {
             >
               <div className="flex items-start space-x-3">
                 <img
-                  src={comment.authorImage || "/default-avatar.png"}
+                  src={comment.authorImage || "/default-avatar.svg"}
                   alt={comment.authorName}
                   className="w-10 h-10 rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "/default-avatar.svg";
+                  }}
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">

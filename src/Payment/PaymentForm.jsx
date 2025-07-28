@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import useAxios from "../hooks/useAxios";
 import { useNavigate } from "react-router";
 

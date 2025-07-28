@@ -72,6 +72,9 @@ const PostDetails = () => {
     mutationFn: async ({ postId, comment }) => {
       const response = await axiosSecure.post(`/posts/${postId}/comments`, {
         comment,
+        authorName: user.displayName || user.email,
+        authorEmail: user.email,
+        authorImage: user.photoURL || "/default-avatar.svg",
       });
       return response.data;
     },
@@ -162,9 +165,12 @@ const PostDetails = () => {
           {/* Post Header */}
           <div className="flex items-start space-x-4 mb-6">
             <img
-              src={post?.authorImage || "/default-avatar.png"}
+              src={post?.authorImage || "/default-avatar.svg"}
               alt={post?.authorName}
               className="w-16 h-16 rounded-full object-cover"
+              onError={(e) => {
+                e.target.src = "/default-avatar.svg";
+              }}
             />
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -364,9 +370,12 @@ const PostDetails = () => {
                 >
                   <div className="flex items-start space-x-3">
                     <img
-                      src={comment.authorImage || "/default-avatar.png"}
+                      src={comment.authorImage || "/default-avatar.svg"}
                       alt={comment.authorName}
                       className="w-10 h-10 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.src = "/default-avatar.svg";
+                      }}
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
