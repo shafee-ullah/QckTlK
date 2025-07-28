@@ -56,15 +56,59 @@ const PostDetails = () => {
 
   // Vote mutation
   const voteMutation = useMutation({
-    mutationFn: async ({ postId, voteType }) => {
-      const response = await axiosSecure.post(`/posts/${postId}/vote`, {
+    mutationFn: async ({ postId: _postId, voteType, userId }) => {
+      const response = await axiosSecure.post(`/posts/${_postId}/vote`, {
         voteType,
+        userId
       });
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["post", id]);
+    onMutate: async ({ voteType }) => {
+      await queryClient.cancelQueries(['post', id]);
+      const previousPost = queryClient.getQueryData(['post', id]);
+      
+      queryClient.setQueryData(['post', id], (old) => {
+        if (!old) return old;
+        
+        const newVotes = { ...(old.votes || {}) };
+        const userVote = newVotes[user?.uid];
+        let upVote = old.upVote || 0;
+        let downVote = old.downVote || 0;
+        
+        // Remove previous vote if exists
+        if (userVote) {
+          if (userVote === 'upvote') upVote--;
+          else downVote--;
+        }
+        
+        // Add new vote if different from previous
+        if (!userVote || userVote !== voteType) {
+          newVotes[user?.uid] = voteType;
+          if (voteType === 'upvote') upVote++;
+          else downVote++;
+        } else {
+          // Remove vote if clicking the same button
+          delete newVotes[user?.uid];
+        }
+        
+        return {
+          ...old,
+          upVote: Math.max(0, upVote),
+          downVote: Math.max(0, downVote),
+          votes: newVotes
+        };
+      });
+      
+      return { previousPost };
     },
+    onError: (err, variables, context) => {
+      if (context?.previousPost) {
+        queryClient.setQueryData(['post', id], context.previousPost);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['post', id]);
+    }
   });
 
   // Add comment mutation
@@ -87,10 +131,15 @@ const PostDetails = () => {
 
   const handleVote = (voteType) => {
     if (!user) {
-      // Show login prompt or redirect to login
+      console.log('User not logged in');
       return;
     }
-    voteMutation.mutate({ postId: id, voteType });
+    console.log('Voting:', { postId: id, voteType, userId: user.uid });
+    voteMutation.mutate({ 
+      postId: id, 
+      voteType,
+      userId: user.uid // Make sure userId is included in the mutation
+    });
   };
 
   const handleAddComment = (e) => {
@@ -110,10 +159,24 @@ const PostDetails = () => {
     });
   };
 
+  // Test function to check if clicks are working
+  const testClick = (e) => {
+    if (e) e.stopPropagation();
+    console.log('Test button clicked!');
+    alert('Test button works!');
+  };
+
   if (postLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 py-8 relative">
+          {/* Test button */}
+          {/* <button 
+            onClick={testClick}
+            className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg z-50 shadow-lg"
+          >
+            Test Button
+          </button> */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 animate-pulse">
             <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-4"></div>
             <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2 mb-6"></div>
@@ -147,9 +210,28 @@ const PostDetails = () => {
     );
   }
 
+  // Debug function to check if clicks are working
+  const handleDebugClick = (e) => {
+    if (e) e.stopPropagation();
+    console.log('Debug button clicked!');
+    alert('Debug button works!');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Debug button */}
+      <button 
+        onClick={handleDebugClick}
+        className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg z-50 shadow-lg"
+      >
+        Debug Button
+      </button>
+      
+      <div 
+        className="max-w-4xl mx-auto px-4 py-8 relative"
+        style={{ minHeight: '100vh' }}
+      >
+        
         {/* Breadcrumb */}
         <nav className="mb-6">
           <Link
@@ -211,32 +293,44 @@ const PostDetails = () => {
           </div>
 
           {/* Post Actions */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700 relative" style={{ zIndex: 1 }}>
             <div className="flex items-center gap-6">
+              {/* Test button */}
+              {/* <button 
+                onClick={() => alert('Test button works!')}
+                className="p-2 bg-blue-500 text-white rounded-lg absolute top-[-50px] left-0 z-50"
+              >
+                Test Button
+              </button> */}
+              
               {/* Voting */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative" style={{ zIndex: 1 }}>
                 <button
                   onClick={() => handleVote("upvote")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    post?.userVote === "upvote"
+                  className={`p-2 rounded-lg transition-colors relative z-10 ${
+                    post?.votes?.[user?.uid] === "upvote"
                       ? "bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
-                  disabled={!user}
+                  disabled={!user || voteMutation.isLoading}
+                  title={user ? "Upvote" : "Login to vote"}
                 >
                   <ArrowUp className="w-5 h-5" />
                 </button>
+                
                 <span className="font-semibold text-gray-900 dark:text-white min-w-[2rem] text-center">
                   {(post?.upVote || 0) - (post?.downVote || 0)}
                 </span>
+                
                 <button
                   onClick={() => handleVote("downvote")}
                   className={`p-2 rounded-lg transition-colors ${
-                    post?.userVote === "downvote"
+                    post?.votes?.[user?.uid] === "downvote"
                       ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
-                  disabled={!user}
+                  disabled={!user || voteMutation.isLoading}
+                  title={user ? "Downvote" : "Login to vote"}
                 >
                   <ArrowDown className="w-5 h-5" />
                 </button>
