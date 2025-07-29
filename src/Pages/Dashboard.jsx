@@ -713,7 +713,7 @@ const AddPostTab = () => {
       </form>
 
       {/* Quick Actions */}
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+      {/* <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
         <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
           Quick Actions
         </h4>
@@ -728,7 +728,7 @@ const AddPostTab = () => {
             View My Posts
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
+  signOut as firebaseSignOut,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
-    return signOut(auth);
+    return firebaseSignOut(auth);
   };
 
   useEffect(() => {
