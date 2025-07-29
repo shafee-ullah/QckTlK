@@ -1,6 +1,7 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
+import ReactPaginate from "react-paginate";
 import {
   Search,
   TrendingUp,
@@ -27,21 +28,16 @@ const Home = () => {
   const [endDate, setEndDate] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [sortBy, setSortBy] = useState("newest"); // 'newest' or 'popular'
-  const [showNewPostsNotification, setShowNewPostsNotification] =
-    useState(false);
-  const [lastPostCount, setLastPostCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const postsPerPage = 5;
-  const observerRef = useRef();
+  const [showNewPostsNotification, setShowNewPostsNotification] = useState(false);
 
-  // Fetch posts with infinite scroll
+  // Fetch posts with pagination
   const {
     data: postsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
     isLoading: postsLoading,
     refetch: refetchPosts,
-  } = useInfiniteQuery({
+  } = useQuery({
     queryKey: [
       "posts",
       searchTerm,
@@ -50,31 +46,88 @@ const Home = () => {
       startDate,
       endDate,
       sortBy,
+      currentPage,
     ],
-    queryFn: async ({ pageParam = null }) => {
-      const response = await axiosSecure.get("/posts", {
-        params: {
-          search: searchTerm,
-          tag: selectedTag,
-          author: authorFilter,
-          startDate: startDate,
-          endDate: endDate,
-          sort: sortBy,
-          limit: postsPerPage,
-          lastId: pageParam,
-        },
+    queryFn: async () => {
+      const params = {
+        search: searchTerm,
+        tag: selectedTag,
+        author: authorFilter,
+        startDate: startDate,
+        endDate: endDate,
+        sort: sortBy === 'newest' ? 'new' : 'popular',
+        page: currentPage + 1,
+        limit: postsPerPage,
+      };
+      console.log('Fetching posts with params:', params);
+      console.log('Sending request to /posts with params:', params);
+      const response = await axiosSecure.get("/posts", { 
+        params,
+        paramsSerializer: params => {
+          console.log('Serialized params:', new URLSearchParams(params).toString());
+          return new URLSearchParams(params).toString();
+        }
+      });
+      console.log('Received posts data:', {
+        dataLength: response.data?.data?.length,
+        firstPost: response.data?.data?.[0] ? {
+          title: response.data.data[0].title,
+          upVote: response.data.data[0].upVote,
+          downVote: response.data.data[0].downVote,
+          postTime: response.data.data[0].postTime
+        } : null,
+        sortParam: params.sort,
+        currentPage: params.page,
+        total: response.data?.total,
+        totalPages: response.data?.totalPages,
       });
       return response.data;
     },
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.lastId : undefined,
-    initialPageParam: null,
-    refetchInterval: 30000, // Refetch every 30 seconds
-    refetchIntervalInBackground: true,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
   });
 
-  // Flatten all posts from all pages
-  const allPosts = postsData?.pages.flatMap((page) => page.data) || [];
+  const allPosts = React.useMemo(() => postsData?.data || [], [postsData]);
+  const pageCount = React.useMemo(() => postsData?.totalPages || 0, [postsData]);
+  
+  // Debug logging
+  useEffect(() => {
+    if (postsData) {
+      console.log('Pagination Debug:', {
+        postsData: {
+          data: postsData.data?.length,
+          total: postsData.total,
+          totalPages: postsData.totalPages,
+          currentPage: postsData.currentPage,
+          hasMore: postsData.hasMore,
+        },
+        sortBy,
+        currentPage,
+      });
+      
+      // Log the first post's vote info if available
+      if (postsData.data?.length > 0) {
+        const firstPost = postsData.data[0];
+        console.log('First post info:', {
+          title: firstPost.title,
+          upVote: firstPost.upVote,
+          downVote: firstPost.downVote,
+          netVotes: (firstPost.upVote || 0) - (firstPost.downVote || 0),
+          postTime: firstPost.postTime,
+        });
+      }
+    }
+  }, [postsData, currentPage, pageCount, allPosts, postsLoading]);
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }; 
+  
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm, selectedTag, authorFilter, startDate, endDate, sortBy]);
 
   // Fetch popular tags
   const { data: popularTags = [] } = useQuery({
@@ -86,37 +139,39 @@ const Home = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Check for new posts
+  // Check for new posts periodically
   useEffect(() => {
-    if (allPosts.length > lastPostCount && lastPostCount > 0) {
-      setShowNewPostsNotification(true);
-      setTimeout(() => setShowNewPostsNotification(false), 5000);
-    }
-    setLastPostCount(allPosts.length);
-  }, [allPosts.length, lastPostCount]);
-
-  // Intersection observer for infinite scroll
-  const lastPostRef = useCallback(
-    (node) => {
-      if (postsLoading) return;
-      if (observerRef.current) observerRef.current.disconnect();
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
+    const checkForNewPosts = async () => {
+      try {
+        const response = await axiosSecure.get("/posts/count");
+        const totalPosts = response.data?.total;
+        
+        if (typeof totalPosts === 'number' && postsData?.total && totalPosts > postsData.total) {
+          setShowNewPostsNotification(true);
         }
-      });
-      if (node) observerRef.current.observe(node);
-    },
-    [postsLoading, hasNextPage, isFetchingNextPage, fetchNextPage]
-  );
+      } catch (error) {
+        console.error("Error checking for new posts:", error);
+        // Don't show error to user, just log it
+      }
+    };
+
+    // Only set up the interval if we have posts data
+    if (postsData) {
+      const interval = setInterval(checkForNewPosts, 30000);
+      // Initial check
+      checkForNewPosts();
+      return () => clearInterval(interval);
+    }
+  }, [postsData, postsData?.total, axiosSecure]);
 
   // Fetch tags
-  const { data: tags = [] } = useQuery({
+  useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
       const response = await axiosSecure.get("/tags");
       return response.data;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Fetch announcements
@@ -138,7 +193,23 @@ const Home = () => {
   };
 
   const handleSortChange = (newSort) => {
+    console.log('Sort changed to:', newSort);
+    console.log('Previous sort state:', sortBy);
     setSortBy(newSort);
+    setCurrentPage(0); // Reset to first page when changing sort
+    
+    // Log the expected API request
+    const params = {
+      search: searchTerm,
+      tag: selectedTag,
+      author: authorFilter,
+      startDate: startDate,
+      endDate: endDate,
+      sort: newSort === 'newest' ? 'new' : 'popular',
+      page: 1, // Reset to first page
+      limit: postsPerPage,
+    };
+    console.log('Expected API request with params:', params);
   };
 
   const clearAllFilters = () => {
@@ -410,10 +481,10 @@ const Home = () => {
                 {/* Posts List */}
                 <div className="space-y-6">
                   {allPosts.length > 0 ? (
-                    allPosts.map((post, index) => (
+                    allPosts.map((post) => (
                       <div
                         key={post._id}
-                        ref={index === allPosts.length - 1 ? lastPostRef : null}
+    
                         className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
                       >
                         <div className="flex items-start space-x-4">
@@ -526,17 +597,39 @@ const Home = () => {
                 </div>
 
                 {/* Loading indicator for infinite scroll */}
-                {isFetchingNextPage && (
-                  <div className="mt-8 text-center">
-                    <div className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Loading more posts...
-                    </div>
-                  </div>
-                )}
+
 
                 {/* Pagination */}
-                {/* Removed pagination controls as infinite scroll is implemented */}
+                {pageCount > 1 && (
+                  <div className="flex justify-center mt-8">
+                    <ReactPaginate
+                      breakLabel="..."
+                      nextLabel={
+                        <span className="flex items-center justify-center px-3 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                          <span className="sr-only">Next</span>
+                          <ChevronRight className="w-5 h-5" />
+                        </span>
+                      }
+                      onPageChange={handlePageClick}
+                      pageRangeDisplayed={3}
+                      marginPagesDisplayed={2}
+                      pageCount={pageCount}
+                      previousLabel={
+                        <span className="flex items-center justify-center px-3 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                          <span className="sr-only">Previous</span>
+                          <ChevronLeft className="w-5 h-5" />
+                        </span>
+                      }
+                      renderOnZeroPageCount={null}
+                      containerClassName="inline-flex items-center -space-x-px"
+                      pageLinkClassName="flex items-center justify-center px-3 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      activeLinkClassName="z-10 flex items-center justify-center px-3 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                      breakClassName="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                      disabledClassName="opacity-50 cursor-not-allowed"
+                      forcePage={currentPage}
+                    />
+                  </div>
+                )}
               </>
             )}
           </div>
