@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import bannerBg from "../../assets/banner-bg.svg";
 import {
   Search,
   TrendingUp,
@@ -76,6 +75,16 @@ const Home = () => {
 
   // Flatten all posts from all pages
   const allPosts = postsData?.pages.flatMap((page) => page.data) || [];
+
+  // Fetch popular tags
+  const { data: popularTags = [] } = useQuery({
+    queryKey: ['popularTags'],
+    queryFn: async () => {
+      const response = await axiosSecure.get('/api/tags/popular');
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Check for new posts
   useEffect(() => {
@@ -295,19 +304,24 @@ const Home = () => {
                 Popular Tags
               </h3>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <button
-                    key={tag._id}
-                    onClick={() => handleTagClick(tag.name)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      selectedTag === tag.name
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-800"
-                    }`}
-                  >
-                    #{tag.name}
-                  </button>
-                ))}
+                {popularTags.length > 0 ? (
+                  popularTags.map((tag) => (
+                    <button
+                      key={tag.name}
+                      onClick={() => handleTagClick(tag.name)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                        selectedTag === tag.name
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-800"
+                      }`}
+                      title={`${tag.count} posts`}
+                    >
+                      #{tag.name} <span className="text-xs opacity-75">{tag.count}</span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No tags found</p>
+                )}
               </div>
             </div>
 
