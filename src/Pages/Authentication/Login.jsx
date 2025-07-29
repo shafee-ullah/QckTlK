@@ -15,9 +15,13 @@ const Login = () => {
   const { signIn } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
+  // Get the intended destination or default to home
+  const from = location.state?.from?.pathname || location.state?.from || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Add a message if redirected from a protected route
+  const redirectMessage = location.state?.from ? 'Please log in to continue' : '';
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -68,7 +72,7 @@ const Login = () => {
               Welcome Back
             </h1>
             <p className="text-gray-600 dark:text-gray-300 text-sm text-center">
-              Sign in to your account
+              {redirectMessage || 'Sign in to your account'}
             </p>
           </div>
 

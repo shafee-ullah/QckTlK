@@ -247,28 +247,28 @@ const ProfileTab = ({ profile }) => (
       {/* Profile Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-          <div className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+          <div className="text-sm text-blue-600 dark:text-blue-700 font-medium">
             Membership
           </div>
-          <div className="text-lg font-bold text-blue-900 dark:text-blue-100">
+          <div className="text-lg font-bold text-blue-900 dark:text-blue-400">
             {profile.membership || "Free"}
           </div>
         </div>
         <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-          <div className="text-sm text-green-600 dark:text-green-400 font-medium">
+          <div className="text-sm text-green-600 dark:text-green-700 font-medium">
             Member Since
           </div>
-          <div className="text-lg font-bold text-green-900 dark:text-green-100">
+          <div className="text-lg font-bold text-green-900 dark:text-green-500">
             {profile.membershipUpgradedAt
               ? new Date(profile.membershipUpgradedAt).toLocaleDateString()
               : "N/A"}
           </div>
         </div>
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-          <div className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+          <div className="text-sm text-purple-600 dark:text-purple-700 font-medium">
             Status
           </div>
-          <div className="text-lg font-bold text-purple-900 dark:text-purple-100">
+          <div className="text-lg font-bold text-purple-900 dark:text-purple-500">
             Active
           </div>
         </div>

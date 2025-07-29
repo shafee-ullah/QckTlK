@@ -9,6 +9,7 @@ import Register from "../Pages/Authentication/Register";
 import CreatePost from "../Pages/CreatePost";
 import Dashboard from "../Pages/Dashboard";
 import Payment from "../Payment/Payment";
+import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -29,11 +30,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element:<PrivateRoute><Dashboard /></PrivateRoute>,
       },
       {
         path: "/membership",
-        element: <Payment />,
+        element: (
+          <PrivateRoute>
+            <Payment />
+          </PrivateRoute>
+        ),
       },
     ],
   },
@@ -44,11 +49,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/login",
-        Component: Login,
+        element: <Login />,
       },
       {
         path: "/register",
-        Component: Register,
+        element: <Register />,
       },
     ],
   },
