@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router";
 import {
   User,
@@ -9,6 +9,7 @@ import {
   Settings,
   Home,
   BarChart3,
+  Users,
 } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import useAxios from "../hooks/useAxios";
@@ -20,7 +21,28 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [payments, setPayments] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  
+  const fetchAllUsers = useCallback(async () => {
+    try {
+      setLoadingUsers(true);
+      const res = await axiosSecure.get('/api/users');
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+    } finally {
+      setLoadingUsers(false);
+    }
+  }, [axiosSecure]);
+
+  // Fetch users when the users tab becomes active
+  useEffect(() => {
+    if (activeTab === 'users' && user?.email) {
+      fetchAllUsers();
+    }
+  }, [activeTab, user?.email, fetchAllUsers]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -53,20 +75,16 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
+
     const fetchPayments = async () => {
       try {
-        const res = await axiosSecure.get(
-          `/api/payments/history?email=${user.email}`
-        );
+        const res = await axiosSecure.get(`/api/payments?email=${user.email}`);
         setPayments(res.data);
       } catch (err) {
-        // If no payment history exists, set empty array
-        if (err.response?.status === 404) {
-          setPayments([]);
-        }
-        // Ignore other errors for now
+        console.error("Failed to fetch payments:", err);
       }
     };
+
     if (user?.email) {
       fetchProfile();
       fetchPayments();
@@ -106,6 +124,7 @@ const Dashboard = () => {
     { id: "add-post", name: "Add Post", icon: Plus },
     { id: "comments", name: "Comments", icon: MessageSquare },
     { id: "payments", name: "Payments", icon: CreditCard },
+    { id: "users", name: "Manage Users", icon: Users },
     { id: "stats", name: "Statistics", icon: BarChart3 },
   ];
 
@@ -121,6 +140,8 @@ const Dashboard = () => {
         return <CommentsTab />;
       case "payments":
         return <PaymentsTab payments={payments} />;
+      case "users":
+        return <UsersTab users={users} loading={loadingUsers} fetchUsers={fetchAllUsers} />;
       case "stats":
         return <StatsTab />;
       default:
@@ -1075,6 +1096,177 @@ const PaymentsTab = ({ payments }) => (
     )}
   </div>
 );
+
+const UsersTab = ({ users, loading, fetchUsers }) => {
+  const updateUserRole = async (userId, newRole) => {
+    try {
+      // Ensure we're using the correct API URL based on the environment
+      const apiUrl = import.meta.env.DEV 
+        ? `http://localhost:3000/api/users/${userId}/role`
+        : `/api/users/${userId}/role`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include', // Include cookies if using session-based auth
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        // If we can't parse the error as JSON, use the status text
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      if (!response.ok) {
+        throw new Error(errorData.error || 'Failed to update user role');
+      }
+
+      // Refresh the users list to show the updated role
+      await fetchUsers();
+      alert(`User role updated to ${newRole} successfully!`);
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      alert(error.message || 'Failed to update user role. Please check the console for more details.');
+    }
+  };
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'N/A';
+    }
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Manage Users</h2>
+        <button
+          onClick={fetchUsers}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          disabled={loading}
+        >
+          {loading ? 'Refreshing...' : 'Refresh Users'}
+        </button>
+      </div>
+      
+      {loading && users.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading users...</p>
+        </div>
+      ) : users.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-600 dark:text-gray-400">No users found.</p>
+        </div>
+      ) : (
+        <div className="overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Name
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Email
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Member Since
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" className="relative px-6 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {users.map((user) => {
+                // Ensure we have a valid ID for the key
+                const userId = user._id || user.id || Math.random().toString(36).substr(2, 9);
+                const displayName = user.displayName || user.email?.split('@')[0] || 'User';
+                const email = user.email || 'No email';
+                // Handle different possible membership values (premium, gold, free, etc.)
+                const membership = (user.membership || 'free').toLowerCase();
+                const isPremium = membership === 'premium' || membership === 'gold';
+                const photoURL = user.photoURL || '/default-avatar.svg';
+                
+                return (
+                  <tr key={userId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img 
+                            className="h-10 w-10 rounded-full" 
+                            src={photoURL} 
+                            alt={displayName}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/default-avatar.svg';
+                            }}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {displayName}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {formatDate(user.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          isPremium 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                        }`}>
+                          {isPremium ? 'Premium' : 'Free'}
+                        </span>
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          user.role === 'admin'
+                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                        }`}>
+                          {user.role || 'member'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      {user.role !== 'admin' && (
+                        <button
+                          onClick={() => updateUserRole(user._id, 'admin')}
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                          title="Make Admin"
+                        >
+                          Make Admin
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const StatsTab = () => (
   <div>

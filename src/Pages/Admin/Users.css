@@ -1,0 +1,129 @@
+.admin-users {
+  padding: 20px;
+}
+
+.users-container {
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.users-container .ant-card-head {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.users-container .ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Admin row styling */
+.admin-row {
+  background-color: #fffbe6;
+}
+
+[data-theme='dark'] .admin-row {
+  background-color: #1f1f1f;
+}
+
+/* Action buttons */
+.ant-btn-text:not(:disabled):hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] .ant-btn-text:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Role tags */
+.ant-tag {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Search filter */
+.ant-input-affix-wrapper {
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-users {
+    padding: 12px;
+  }
+  
+  .users-container .ant-card-head-title {
+    padding: 12px 0;
+  }
+  
+  .users-container .ant-card-extra {
+    padding: 12px 0;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] {
+  .users-container {
+    background: #141414;
+    border-color: #303030;
+  }
+  
+  .users-container .ant-card-head {
+    border-bottom-color: #303030;
+  }
+  
+  .users-container .ant-table {
+    background: #141414;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .users-container .ant-table-thead > tr > th {
+    background: #1d1d1d;
+    color: rgba(255, 255, 255, 0.85);
+    border-bottom-color: #303030;
+  }
+  
+  .users-container .ant-table-tbody > tr > td {
+    border-bottom-color: #303030;
+  }
+  
+  .users-container .ant-table-tbody > tr:hover > td {
+    background: #1f1f1f !important;
+  }
+  
+  .users-container .ant-table-pagination.ant-pagination {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .users-container .ant-pagination-item a {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .users-container .ant-pagination-item-active {
+    background: #1d1d1d;
+    border-color: #434343;
+  }
+  
+  .users-container .ant-pagination-item-active a {
+    color: #1890ff;
+  }
+  
+  .users-container .ant-pagination-item-link {
+    background: #1d1d1d;
+    border-color: #434343;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .users-container .ant-select-selector {
+    background: #1d1d1d;
+    border-color: #434343;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .users-container .ant-select-arrow {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}

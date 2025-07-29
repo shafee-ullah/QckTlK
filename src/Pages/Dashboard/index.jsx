@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import useAuth from '../../hooks/useAuth';
 import useAxios from '../../hooks/useAxios';
 
