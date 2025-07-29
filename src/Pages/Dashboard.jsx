@@ -315,17 +315,19 @@ const ProfileTab = ({ profile }) => (
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        {/* <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
           Edit Profile
-        </button>
+        </button> */}
         {profile.badge !== "Gold" && (
-          <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-            Upgrade to Gold
-          </button>
+          <Link to="/membership">
+            <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+              Upgrade to Gold
+            </button>
+          </Link>
         )}
-        <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+        {/* <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
           Change Password
-        </button>
+        </button> */}
       </div>
     </div>
   </div>

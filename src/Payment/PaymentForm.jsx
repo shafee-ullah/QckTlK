@@ -110,7 +110,7 @@ const PaymentForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 border rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Complete Your Payment</h2>
+      <h2 className="text-xl font-semibold mb-4  dark:text-blue-600">Complete Your Payment</h2>
 
       {isLoading ? (
         <p>Loading payment info...</p>
