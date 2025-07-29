@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { X } from "lucide-react";
 import {
   ArrowUp,
   ArrowDown,
@@ -30,6 +31,18 @@ const PostDetails = () => {
   const queryClient = useQueryClient();
   const [commentText, setCommentText] = useState("");
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+
+  const openCommentModal = (comment) => {
+    setSelectedComment(comment);
+    setShowCommentModal(true);
+  };
+
+  const closeCommentModal = () => {
+    setShowCommentModal(false);
+    setSelectedComment(null);
+  };
 
   // Fetch post details
   const {
@@ -159,12 +172,7 @@ const PostDetails = () => {
     });
   };
 
-  // Test function to check if clicks are working
-  const testClick = (e) => {
-    if (e) e.stopPropagation();
-    console.log('Test button clicked!');
-    alert('Test button works!');
-  };
+
 
   if (postLoading) {
     return (
@@ -480,9 +488,24 @@ const PostDetails = () => {
                           {formatDate(comment.createdAt)}
                         </span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        {comment.comment}
-                      </p>
+                      <div className="text-gray-700 dark:text-gray-300">
+                        {comment.comment.length > 100 ? (
+                          <>
+                            {comment.comment.substring(0, 100)}...
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openCommentModal(comment);
+                              }}
+                              className="text-blue-600 dark:text-blue-400 hover:underline ml-1"
+                            >
+                              Read More
+                            </button>
+                          </>
+                        ) : (
+                          <>{comment.comment}</>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -495,6 +518,33 @@ const PostDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Comment Modal */}
+      {showCommentModal && selectedComment && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Comment by {selectedComment.authorName}
+                </h3>
+                <button
+                  onClick={closeCommentModal}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                {selectedComment.comment}
+              </div>
+              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                Posted on {formatDate(selectedComment.createdAt)}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
