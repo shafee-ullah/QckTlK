@@ -1109,10 +1109,9 @@ const UsersTab = ({ users, loading, fetchUsers }) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          'Accept': 'application/json'
         },
-        credentials: 'include', // Include cookies if using session-based auth
-        body: JSON.stringify({ role: newRole }),
+        body: JSON.stringify({ role: newRole })
       });
 
       let errorData;

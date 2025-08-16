@@ -59,12 +59,12 @@ const Home = () => {
         page: currentPage + 1,
         limit: postsPerPage,
       };
-      console.log('Fetching posts with params:', params);
-      console.log('Sending request to /posts with params:', params);
+      // console.log('Fetching posts with params:', params);
+      // console.log('Sending request to /posts with params:', params);
       const response = await axiosSecure.get("/posts", { 
         params,
         paramsSerializer: params => {
-          console.log('Serialized params:', new URLSearchParams(params).toString());
+          // console.log('Serialized params:', new URLSearchParams(params).toString());
           return new URLSearchParams(params).toString();
         }
       });
@@ -260,7 +260,7 @@ const Home = () => {
             </p>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="max-w-4xl mx-auto">
+            <form onSubmit={handleSearch} className="max-w-4xl mx-auto px-4 sm:px-6">
               <div className="space-y-4">
                 {/* Main Search */}
                 <div className="relative">
@@ -269,12 +269,12 @@ const Home = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search posts by title or content..."
-                    className="w-full px-6 py-4 pl-12 text-gray-900  bg-white rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 text-lg"
+                    className="w-full px-4 sm:px-6 py-3 pl-10 sm:pl-12 text-base text-white  sm:text-lg bg-white dark:bg-black rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
                   />
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 h-6" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
                   <button
                     type="submit"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition-colors"
+                    className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white dark:text-black px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-sm sm:text-base transition-colors"
                   >
                     Search
                   </button>
@@ -364,13 +364,13 @@ const Home = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Sidebar - Hidden on mobile, shown on lg+ */}
+          <div className="hidden lg:block lg:col-span-1 space-y-6">
             {/* Tags Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-white flex items-center">
                 <TrendingUp className="w-5 h-5 mr-2" />
                 Popular Tags
               </h3>
@@ -380,14 +380,14 @@ const Home = () => {
                     <button
                       key={tag.name}
                       onClick={() => handleTagClick(tag.name)}
-                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-medium transition-colors ${
                         selectedTag === tag.name
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-800"
-                      }`}
+                      } rounded-full`}
                       title={`${tag.count} posts`}
                     >
-                      #{tag.name} <span className="text-xs opacity-75">{tag.count}</span>
+                      #{tag.name} <span className="opacity-75">{tag.count}</span>
                     </button>
                   ))
                 ) : (
@@ -399,7 +399,7 @@ const Home = () => {
             {/* Announcements Section */}
             {announcements.length > 0 && (
               <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4 text-yellow-800 dark:text-yellow-200 flex items-center">
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-yellow-800 dark:text-yellow-200 flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
                   Announcements ({announcements.length})
                 </h3>
@@ -426,31 +426,31 @@ const Home = () => {
           <div className="lg:col-span-3">
             {/* Sort Controls */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
                   Forum Posts
                 </h2>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => handleSortChange("newest")}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg font-medium transition-colors ${
                       sortBy === "newest"
                         ? "bg-blue-600 text-white"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
                     }`}
                   >
-                    <Calendar className="w-4 h-4 inline mr-1" />
+                    <Calendar className="w-4 h-4 inline mr-1.5" />
                     Newest
                   </button>
                   <button
                     onClick={() => handleSortChange("popular")}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg font-medium transition-colors ${
                       sortBy === "popular"
                         ? "bg-blue-600 text-white"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
                     }`}
                   >
-                    <TrendingUp className="w-4 h-4 inline mr-1" />
+                    <TrendingUp className="w-4 h-4 inline mr-1.5" />
                     Popular
                   </button>
                 </div>
@@ -484,92 +484,56 @@ const Home = () => {
                     allPosts.map((post) => (
                       <div
                         key={post._id}
-    
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 sm:p-6"
                       >
-                        <div className="flex items-start space-x-4">
+                        <div className="flex items-start space-x-3 sm:space-x-4">
                           {/* Author Avatar */}
                           <img
                             src={post.authorImage || "/default-avatar.png"}
                             alt={post.authorName}
-                            className="w-12 h-12 rounded-full object-cover"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
                           />
 
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             {/* Post Header */}
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-medium text-gray-900 dark:text-white">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                              <h3 className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
                                 {post.authorName}
                               </h3>
-                              <span className="text-gray-500 dark:text-gray-400 text-sm">
+                              <span className="hidden sm:inline text-gray-400">•</span>
+                              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                 {formatDate(post.postTime)}
                               </span>
                             </div>
 
-                            {/* Post Title with Hover Preview */}
-                            <div className="relative group">
-                              <Link to={`/post/${post._id}`}>
-                                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">
-                                  {post.title}
-                                </h2>
-                              </Link>
-
-                              {/* Hover Preview */}
-                              {post.description && (
-                                <div className="absolute bottom-full left-0 mb-2 w-80 bg-gray-900 text-white p-4 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                                  <div className="text-sm font-medium mb-2">
-                                    {post.title}
-                                  </div>
-                                  <div className="text-xs text-gray-300 line-clamp-3">
-                                    {post.description.length > 150
-                                      ? `${post.description.substring(
-                                          0,
-                                          150
-                                        )}...`
-                                      : post.description}
-                                  </div>
-                                  <div className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Post Tags */}
-                            <div className="flex flex-wrap gap-1 mb-4">
-                              {post.tags &&
-                                post.tags.map((tag, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full"
-                                  >
-                                    #{tag}
-                                  </span>
-                                ))}
-                            </div>
+                            {/* Post Title */}
+                            <Link to={`/post/${post._id}`} className="block">
+                              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-blue-600 dark:hover:text-blue-400 line-clamp-2">
+                                {post.title}
+                              </h2>
+                            </Link>
 
                             {/* Post Stats */}
-                            <div className="flex items-center gap-6 text-gray-500 dark:text-gray-400">
-                              <div className="flex items-center gap-1">
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-gray-500 dark:text-gray-400 mt-3">
+                              <div className="flex items-center gap-1 text-sm">
                                 <MessageCircle className="w-4 h-4" />
-                                <span className="text-sm">
-                                  {post.commentCount || 0} comments
-                                </span>
+                                <span>{post.commentCount || 0} comments</span>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-1">
-                                  <ArrowUp className="w-4 h-4 text-green-500" />
-                                  <span className="text-sm">
-                                    {post.upVote || 0}
-                                  </span>
+                                  <button className="p-1 hover:text-green-500">
+                                    <ArrowUp className="w-4 h-4" />
+                                  </button>
+                                  <span className="text-sm">{post.upVote || 0}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <ArrowDown className="w-4 h-4 text-red-500" />
-                                  <span className="text-sm">
-                                    {post.downVote || 0}
-                                  </span>
+                                  <button className="p-1 hover:text-red-500">
+                                    <ArrowDown className="w-4 h-4" />
+                                  </button>
+                                  <span className="text-sm">{post.downVote || 0}</span>
                                 </div>
-                                <span className="text-sm font-medium">
-                                  Net:{" "}
-                                  {(post.upVote || 0) - (post.downVote || 0)}
+                                <span className="text-sm font-medium hidden sm:inline">
+                                  Net: {(post.upVote || 0) - (post.downVote || 0)}
                                 </span>
                               </div>
                             </div>
@@ -606,9 +570,9 @@ const Home = () => {
                       breakLabel="..."
                       nextLabel={
                         <span className="flex items-center justify-center px-3 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                          <span className="sr-only">Next</span>
-                          <ChevronRight className="w-5 h-5" />
-                        </span>
+                        <span className="sr-only">Next</span>
+                        <ChevronRight className="w-5 h-5" />
+                      </span>
                       }
                       onPageChange={handlePageClick}
                       pageRangeDisplayed={3}

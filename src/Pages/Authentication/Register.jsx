@@ -34,14 +34,14 @@ const Register = () => {
     setIsLoading(true);
     try {
       const result = await createUser(data.email, data.password);
-      console.log(result.user);
+      // console.log(result.user);
 
       // Update user profile with name
       await updateUserProfile(data.name);
 
       navigate(from);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsLoading(false);
     }

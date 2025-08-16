@@ -9,13 +9,7 @@ import CreatePost from "../Pages/CreatePost";
 import Dashboard from "../Pages/Dashboard";
 import Payment from "../Payment/Payment";
 import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
-import AdminLayout from "../Layouts/AdminLayout";
-import AdminDashboard from "../Pages/Admin/AdminDashboard";
-import AdminUsers from "../Pages/Admin/AdminUsers";
-import AdminReports from "../Pages/Admin/AdminReports";
-import AdminAnnouncements from "../Pages/Admin/AdminAnnouncements";
-import AdminTags from "../Pages/Admin/AdminTags";
-import AdminRoute from "../components/AdminRoute/AdminRoute";
+
 
 export const router = createBrowserRouter([
   {
@@ -62,34 +56,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/admin",
-    element: <AdminRoute><AdminLayout /></AdminRoute>,
-    children: [
-      {
-        index: true,
-        element: <AdminDashboard />,
-      },
-      {
-        path: "dashboard",
-        element: <AdminDashboard />,
-      },
-      {
-        path: "users",
-        element: <AdminUsers />,
-      },
-      {
-        path: "reports",
-        element: <AdminReports />,
-      },
-      {
-        path: "announcements",
-        element: <AdminAnnouncements />,
-      },
-      {
-        path: "tags",
-        element: <AdminTags />,
-      },
-    ],
-  },
+
 ]);

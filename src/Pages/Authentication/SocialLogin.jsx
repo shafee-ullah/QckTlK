@@ -15,7 +15,7 @@ const SocialLogin = () => {
       const result = await signInWithGoogle();
       const user = result.user;
 
-      console.log("Google user:", user);
+      // console.log("Google user:", user);
 
       // Optional: You can store user info in localStorage/sessionStorage if needed
       // localStorage.setItem("user", JSON.stringify(user));
