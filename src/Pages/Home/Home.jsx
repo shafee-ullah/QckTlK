@@ -251,7 +251,7 @@ const Home = () => {
         <div className="absolute inset-0 "></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 ">
               Welcome to QckTlk Forum
             </h1>
             <p className="text-xl mb-8 opacity-90">
@@ -269,12 +269,12 @@ const Home = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search posts by title or content..."
-                    className="w-full px-4 sm:px-6 py-3 pl-10 sm:pl-12 text-base text-white  sm:text-lg bg-white dark:bg-black rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
+                    className="w-full px-4 sm:px-6 py-3 pl-10 sm:pl-12 text-base text-gray-900 dark:text-white sm:text-lg bg-white dark:bg-gray-800 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
                   />
                   <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
                   <button
                     type="submit"
-                    className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white dark:text-black px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-sm sm:text-base transition-colors"
+                    className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white dark:text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-sm sm:text-base transition-colors"
                   >
                     Search
                   </button>

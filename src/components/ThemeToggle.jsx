@@ -8,8 +8,10 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-        isDarkMode ? 'bg-blue-600' : 'bg-gray-300'
+      className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+        isDarkMode ? 'focus:ring-blue-500' : 'focus:ring-yellow-500'
+      } ${
+        isDarkMode ? 'bg-blue-600' : 'bg-yellow-400'
       }`}
       role="switch"
       aria-checked={isDarkMode}
@@ -24,7 +26,7 @@ const ThemeToggle = () => {
       
       {/* Icons */}
       <Sun 
-        className={`absolute left-1 w-3 h-3 transition-opacity duration-300 ${
+        className={`absolute left-1 w-3 h-3 transition-opacity duration-300  ${
           isDarkMode ? 'opacity-0' : 'opacity-100 text-yellow-500'
         }`}
       />

@@ -42,7 +42,7 @@ const Login = () => {
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
         <Link
           to="/"
-          className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg text-gray-700 hover:bg-white hover:shadow-md transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
+          className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
         >
           <svg
             className="w-4 h-4 mr-2"

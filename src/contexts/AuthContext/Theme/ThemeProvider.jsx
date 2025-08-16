@@ -17,21 +17,19 @@ export const ThemeProvider = ({ children }) => {
     if (savedTheme) {
       return savedTheme === 'dark';
     }
-    // Then check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Then check system preference - INVERTED to match Tailwind's behavior
+    return !window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
     // Update localStorage
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
-    // Apply theme to document
+    // Apply theme to document - INVERTED to match Tailwind's behavior
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      // console.log('Dark mode enabled');
-    } else {
       document.documentElement.classList.remove('dark');
-      // console.log('Light mode enabled');
+    } else {
+      document.documentElement.classList.add('dark');
     }
   }, [isDarkMode]);
 
@@ -42,7 +40,8 @@ export const ThemeProvider = ({ children }) => {
     const handleChange = (e) => {
       // Only update if user hasn't set a preference
       if (!localStorage.getItem('theme')) {
-        setIsDarkMode(e.matches);
+        // INVERTED to match Tailwind's behavior
+        setIsDarkMode(!e.matches);
       }
     };
 

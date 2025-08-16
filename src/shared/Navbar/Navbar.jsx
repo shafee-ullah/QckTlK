@@ -46,7 +46,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
+    <nav className="bg-white dark:bg-gray-800 navbar-shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo and Website Name */}
@@ -167,7 +167,7 @@ const Navbar = () => {
             <ThemeToggle />
 
             {/* Hamburger Menu (Mobile) */}
-            <button onClick={() => setMenuOpen(!menuOpen)}>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="text-black dark:text-white">
               {menuOpen ? (
                 <X className="w-6 h-6" />
               ) : (
@@ -257,7 +257,7 @@ const Navbar = () => {
                         <UserIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                         Your Profile
                       </Link>
-                      <Link
+                      {/* <Link
                         to="/dashboard?tab=settings"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                         role="menuitem"
@@ -265,7 +265,7 @@ const Navbar = () => {
                       >
                         <SettingsIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                         Settings
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={handleSignOut}
                         className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
