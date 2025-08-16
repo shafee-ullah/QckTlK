@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
-import { Bell, Menu, X, ChevronDown, LogOut, User as UserIcon, Settings as SettingsIcon } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User as UserIcon, Settings as SettingsIcon } from "lucide-react";
 import qcktlkLogo from "../../assets/qcktlk.png";
 import useAuth from "../../hooks/useAuth";
 import ThemeToggle from "../../components/ThemeToggle";
@@ -65,12 +65,6 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/membership"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
-            >
-              Membership
-            </Link>
             {user && (
               <Link
                 to="/dashboard"
@@ -79,12 +73,35 @@ const Navbar = () => {
                 My Dashboard
               </Link>
             )}
-            <Link
-              to="/notifications"
+              {!user && (
+              <Link
+                to="/become-member"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+              >
+                Become a Member
+              </Link>
+            )}
+              <Link
+              to="/about"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
             >
-              <Bell className="w-5 h-5" />
+              About Us
             </Link>
+            <Link
+              to="/contact"
+              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+            >
+              Contact
+            </Link>
+          
+            {user && (
+              <Link
+                to="/membership"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+              >
+                Membership
+              </Link>
+            )}
           </div>
 
           {/* Right Side (Desktop) */}
@@ -133,7 +150,7 @@ const Navbar = () => {
                         <UserIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                         Your Profile
                       </Link>
-                      <Link
+                      {/* <Link
                         to="/dashboard?tab=settings"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                         role="menuitem"
@@ -141,7 +158,7 @@ const Navbar = () => {
                       >
                         <SettingsIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                         Settings
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={handleSignOut}
                         className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -189,13 +206,6 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/membership"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-              onClick={() => setMenuOpen(false)}
-            >
-              Membership
-            </Link>
             {user && (
               <Link
                 to="/dashboard"
@@ -205,14 +215,38 @@ const Navbar = () => {
                 My Dashboard
               </Link>
             )}
-            <Link
-              to="/notifications"
+              <Link
+              to="/about"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
               onClick={() => setMenuOpen(false)}
             >
-              Notifications
+              About Us
             </Link>
-
+            <Link
+              to="/contact"
+              className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact
+            </Link>
+            {!user && (
+              <Link
+                to="/become-member"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
+                onClick={() => setMenuOpen(false)}
+              >
+                Become a Member
+              </Link>
+            )}
+            {user && (
+              <Link
+                to="/membership"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
+                onClick={() => setMenuOpen(false)}
+              >
+                Membership
+              </Link>
+            )}
             {user ? (
               <div className="relative mt-2" ref={profileRef}>
                 <button

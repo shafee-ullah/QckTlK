@@ -9,7 +9,12 @@ import CreatePost from "../Pages/CreatePost";
 import Dashboard from "../Pages/Dashboard";
 import Payment from "../Payment/Payment";
 import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
-
+import AboutUs from "../Pages/LegalPages/AboutUs";
+import Contact from "../Pages/LegalPages/Contact";
+import PrivacyPolicy from "../Pages/LegalPages/PrivacyPolicy";
+import TermsOfService from "../Pages/LegalPages/TermsOfService";
+import CookiePolicy from "../Pages/LegalPages/CookiePolicy";
+import BecomeMember from "../Pages/BecomeMember";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +45,31 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      // Legal Pages
+      {
+        path: "/become-member",
+        element: <BecomeMember />,
+      },
+      {
+        path: "/about",
+        element: <AboutUs />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "/cookies",
+        element: <CookiePolicy />,
+      },
     ],
   },
   {
@@ -56,5 +86,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
