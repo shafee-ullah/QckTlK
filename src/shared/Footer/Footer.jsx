@@ -25,9 +25,9 @@ const Footer = () => {
                             <Link to="/" className="block text-base text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
                                 Home
                             </Link>
-                            <Link to="/membership" className="block text-base text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
+                            {/* <Link to="/membership" className="block text-base text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
                                 Membership
-                            </Link>
+                            </Link> */}
                             <Link to="/about" className="block text-base text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
                                 About Us
                             </Link>

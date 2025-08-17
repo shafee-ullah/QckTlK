@@ -16,6 +16,9 @@ import {
   Filter,
   X,
   RefreshCw,
+  HelpCircle,
+  Check,
+  RotateCw
 } from "lucide-react";
 import useAxios from "../../hooks/useAxios";
 
@@ -31,6 +34,64 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const postsPerPage = 5;
   const [showNewPostsNotification, setShowNewPostsNotification] = useState(false);
+
+  // Add this state for Q&A
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+
+  const questions = [
+    {
+      question: 'What is the virtual DOM in React?',
+      options: [
+        'A copy of the real DOM',
+        'A lightweight version of the browser DOM',
+        'A React component',
+        'A JavaScript framework'
+      ],
+      correct: 1,
+      explanation: 'The virtual DOM is a lightweight copy of the actual DOM that React uses to optimize updates.'
+    },
+    {
+      question: 'What does JSX stand for?',
+      options: [
+        'JavaScript XML',
+        'JavaScript Extension',
+        'JavaScript Syntax',
+        'JavaScript XML Syntax'
+      ],
+      correct: 0,
+      explanation: 'JSX stands for JavaScript XML. It allows us to write HTML in React.'
+    },
+    {
+      question: 'What is the purpose of state in React?',
+      options: [
+        'To store component data',
+        'To handle HTTP requests',
+        'To style components',
+        'To define component structure'
+      ],
+      correct: 0,
+      explanation: 'State is used to store data that can change over time and affect what renders on the page.'
+    }
+  ];
+
+  const handleOptionSelect = (index) => {
+    if (showAnswer) return;
+    setSelectedOption(index);
+    const correct = index === questions[currentQuestionIndex].correct;
+    setIsCorrect(correct);
+    setShowAnswer(true);
+  };
+
+  const nextQuestion = () => {
+    const nextIndex = (currentQuestionIndex + 1) % questions.length;
+    setCurrentQuestionIndex(nextIndex);
+    setShowAnswer(false);
+    setSelectedOption(null);
+    setIsCorrect(null);
+  };
 
   // Fetch posts with pagination
   const {
@@ -393,6 +454,77 @@ const Home = () => {
                 ) : (
                   <p className="text-sm text-gray-500 dark:text-gray-400">No tags found</p>
                 )}
+              </div>
+            </div>
+
+            {/* Q&A Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+                <HelpCircle className="w-5 h-5 mr-2 text-blue-500" />
+                Test Your Knowledge
+              </h3>
+              
+              <div className="mb-4">
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                  {questions[currentQuestionIndex].question}
+                </p>
+                
+                <div className="space-y-3">
+                  {questions[currentQuestionIndex].options.map((option, index) => {
+                    let optionClasses = "p-3 rounded-lg text-left w-full transition-colors ";
+                    
+                    if (showAnswer) {
+                      if (index === questions[currentQuestionIndex].correct) {
+                        optionClasses += "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200";
+                      } else if (index === selectedOption && !isCorrect) {
+                        optionClasses += "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200";
+                      } else {
+                        optionClasses += "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
+                      }
+                    } else {
+                      optionClasses += "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300";
+                    }
+                    
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleOptionSelect(index)}
+                        className={optionClasses}
+                        disabled={showAnswer}
+                      >
+                        <div className="flex items-center">
+                          {showAnswer && (
+                            <span className="mr-2">
+                              {index === questions[currentQuestionIndex].correct ? (
+                                <Check className="w-4 h-4" />
+                              ) : index === selectedOption ? (
+                                <X className="w-4 h-4" />
+                              ) : null}
+                            </span>
+                          )}
+                          {option}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {showAnswer && (
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-600 rounded-lg text-blue-800 dark:text-blue-100">
+                    <p className="font-medium">Explanation:</p>
+                    <p>{questions[currentQuestionIndex].explanation}</p>
+                    <button
+                      onClick={nextQuestion}
+                      className="mt-3 flex items-center text-sm text-blue-600 dark:text-blue-100 hover:text-blue-800 dark:hover:text-blue-300"
+                    >
+                      Next Question <RotateCw className="w-4 h-4 ml-1" />
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Question {currentQuestionIndex + 1} of {questions.length}
               </div>
             </div>
 

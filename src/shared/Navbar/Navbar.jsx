@@ -52,7 +52,7 @@ const Navbar = () => {
           {/* Logo and Website Name */}
           <Link to="/" className="flex items-center">
             <img src={qcktlkLogo} alt="QckTlk Logo" className="h-8 w-8 mr-2" />
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-500">
               QckTlk
             </span>
           </Link>
