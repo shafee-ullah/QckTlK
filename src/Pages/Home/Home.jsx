@@ -839,7 +839,7 @@ const Home = () => {
                       <div className="bg-blue-900/20 dark:bg-blue-300 p-2 rounded-lg mr-3">
                         <Video className="w-5 h-5 text-blue-600 dark:text-blue-600" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h4 className="font-medium text-gray-900 dark:text-white">{event.title}</h4>
                         <p className="text-sm text-gray-600 dark:text-gray-300">{event.speaker}</p>
                         <div className="flex items-center text-xs text-blue-600 dark:text-blue-600 mt-1">
@@ -855,9 +855,12 @@ const Home = () => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{event.description}</p>
-                    <button className="mt-2 text-sm text-blue-600 dark:text-blue-600 hover:underline">
-                      Learn More →
-                    </button>
+                    <Link 
+                      to={`/events/${event.id}`}
+                      className="inline-flex items-center mt-2 text-sm text-blue-600 dark:text-blue-600 hover:underline"
+                    >
+                      Learn More <span className="ml-1">→</span>
+                    </Link>
                   </div>
                 ))}
               </div>

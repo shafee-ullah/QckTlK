@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../Layouts/RootLayout";
 import Home from "../Pages/Home/Home";
 import PostDetails from "../Pages/PostDetails/PostDetails";
+import EventDetails from "../Pages/EventDetails/EventDetails";
 import AuthLayout from "../Layouts/AuthLayout";
 import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
       {
         path: "/post/:id",
         Component: PostDetails,
+      },
+      {
+        path: "/events/:id",
+        Component: EventDetails,
       },
       {
         path: "/create-post",
