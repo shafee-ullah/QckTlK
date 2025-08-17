@@ -79,15 +79,15 @@ const Payment = () => {
             </div>
 
             {/* Pricing */}
-            <div className="mt-8 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg">
+            <div className="mt-8 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-600 dark:to-yellow-300 rounded-lg">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                <div className="text-3xl font-bold text-gray-900 dark:text-">
                   $20.00
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-gray-600 dark:text-gray-900">
                   One-time payment
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <div className="text-xs text-gray-500 dark:text-gray-900 mt-1">
                   Secure payment via Stripe
                 </div>
               </div>
@@ -95,7 +95,7 @@ const Payment = () => {
           </div>
 
           {/* Payment Form */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-900 rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
               Complete Payment
             </h2>

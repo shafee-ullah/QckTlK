@@ -12,6 +12,15 @@ const Navbar = () => {
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
+  // Debug: Log user object
+  useEffect(() => {
+    console.log('Current user in Navbar:', user);
+    if (user) {
+      console.log('User photoURL:', user.photoURL);
+      console.log('User displayName:', user.displayName);
+    }
+  }, [user]);
+
   // Toggle dropdown and handle outside clicks
   useEffect(() => {
     function handleClickOutside(event) {
@@ -123,13 +132,14 @@ const Navbar = () => {
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-blue-600 opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
                     <img
-                      src={user.photoURL || '/default-avatar.svg'}
-                      alt="Profile"
-                      className="w-9 h-9 rounded-full border-2 border-blue-600 transition-transform duration-200 group-active:scale-95"
+                      src={user?.photoURL?.replace('s96-c', 's192-c') || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'U')}&background=random`}
+                      alt={user?.displayName || 'User'}
+                      className="w-9 h-9 rounded-full border-2 border-blue-600 transition-transform duration-200 group-active:scale-95 object-cover"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = '/default-avatar.svg';
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'U')}&background=random`;
                       }}
+                      referrerPolicy="no-referrer"
                     />
                   </div>
                   <ChevronDown 
@@ -261,13 +271,14 @@ const Navbar = () => {
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-blue-600 opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
                     <img
-                      src={user.photoURL || '/default-avatar.svg'}
-                      alt="Profile"
-                      className="w-9 h-9 rounded-full border-2 border-blue-600 transition-transform duration-200 group-active:scale-95"
+                      src={user?.photoURL?.replace('s96-c', 's192-c') || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'U')}&background=random`}
+                      alt={user?.displayName || 'User'}
+                      className="w-9 h-9 rounded-full border-2 border-blue-600 transition-transform duration-200 group-active:scale-95 object-cover"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = '/default-avatar.svg';
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'U')}&background=random`;
                       }}
+                      referrerPolicy="no-referrer"
                     />
                   </div>
                   <span className="text-sm text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

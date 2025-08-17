@@ -228,12 +228,12 @@ const PostDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Debug button */}
-      <button 
+      {/* <button 
         onClick={handleDebugClick}
         className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg z-50 shadow-lg"
       >
         Debug Button
-      </button>
+      </button> */}
       
       <div 
         className="max-w-4xl mx-auto px-4 py-8 relative"
@@ -244,7 +244,7 @@ const PostDetails = () => {
         <nav className="mb-6">
           <Link
             to="/"
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-blue-600 hover:text-blue-700 dark:text-blue-600 dark:hover:text-blue-500"
           >
             ← Back to Home
           </Link>
@@ -255,7 +255,9 @@ const PostDetails = () => {
           {/* Post Header */}
           <div className="flex items-start space-x-4 mb-6">
             <img
-              src={post?.authorImage || "/default-avatar.svg"}
+              src={post?.authorImage?.includes('googleusercontent.com') 
+                ? post.authorImage.replace('s96-c', 's192-c')
+                : post?.authorImage || "/default-avatar.svg"}
               alt={post?.authorName}
               className="w-16 h-16 rounded-full object-cover"
               onError={(e) => {
@@ -317,7 +319,7 @@ const PostDetails = () => {
                   onClick={() => handleVote("upvote")}
                   className={`p-2 rounded-lg transition-colors relative z-10 ${
                     post?.votes?.[user?.uid] === "upvote"
-                      ? "bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400"
+                      ? "bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-100"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
                   disabled={!user || voteMutation.isLoading}
@@ -334,7 +336,7 @@ const PostDetails = () => {
                   onClick={() => handleVote("downvote")}
                   className={`p-2 rounded-lg transition-colors ${
                     post?.votes?.[user?.uid] === "downvote"
-                      ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
+                      ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-100"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
                   disabled={!user || voteMutation.isLoading}
@@ -436,8 +438,8 @@ const PostDetails = () => {
               )}
             </div>
           ) : (
-            <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <p className="text-blue-800 dark:text-blue-200">
+            <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-600/80 border border-blue-200 dark:border-blue-500 rounded-lg">
+              <p className="text-white-force">
                 Please{" "}
                 <Link to="/login" className="underline font-medium">
                   login

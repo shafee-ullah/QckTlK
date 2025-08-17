@@ -233,12 +233,16 @@ const ProfileTab = ({ profile }) => (
       {/* Profile Header */}
       <div className="flex items-center space-x-4">
         <img
-          src={profile.photoURL || profile.authorImage || "/default-avatar.svg"}
+          src={profile.photoURL?.includes('googleusercontent.com') 
+            ? profile.photoURL.replace('s96-c', 's192-c') 
+            : profile.photoURL || "/default-avatar.svg"}
           alt="Profile"
           className="w-20 h-20 rounded-full object-cover border-4 border-gray-200 dark:border-gray-600"
           onError={(e) => {
+            e.target.onerror = null;
             e.target.src = "/default-avatar.svg";
           }}
+          referrerPolicy="no-referrer"
         />
         <div>
           <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -247,7 +251,7 @@ const ProfileTab = ({ profile }) => (
           <p className="text-gray-500 dark:text-gray-400">{profile.email}</p>
           <div className="flex items-center space-x-2 mt-2">
             {profile.badge === "Gold" && (
-              <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full text-sm font-bold shadow-sm">
+              <span className="inline-flex items-center px-3 py-1 bg-yellow-400 text-white rounded-full text-sm font-bold shadow-sm">
                 🏆 Gold Member
               </span>
             )}
@@ -267,16 +271,16 @@ const ProfileTab = ({ profile }) => (
 
       {/* Profile Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-          <div className="text-sm text-blue-600 dark:text-blue-700 font-medium">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-orange-900/10 dark:to-orange-800/10 rounded-lg p-4 border border-green-200 dark:border-yellow-800 ">
+          <div className="text-sm text-blue-600 dark:text-yellow-600 font-medium">
             Membership
           </div>
-          <div className="text-lg font-bold text-blue-900 dark:text-blue-400">
+          <div className="text-lg font-bold text-blue-900 dark:text-yellow-600">
             {profile.membership || "Free"}
           </div>
         </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-          <div className="text-sm text-green-700 dark:text-green-700 font-medium">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/10 dark:to-green-800/10 rounded-lg p-4 border border-green-200 dark:border-green-800">
+          <div className="text-sm text-green-700 dark:text-green-600 font-medium">
             Member Since
           </div>
           <div className="text-lg font-bold text-green-900 dark:text-green-500">
@@ -285,7 +289,7 @@ const ProfileTab = ({ profile }) => (
               : "N/A"}
           </div>
         </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/10 dark:to-purple-800/10 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
           <div className="text-sm text-purple-600 dark:text-purple-700 font-medium">
             Status
           </div>

@@ -23,9 +23,15 @@ import {
   Video
 } from "lucide-react";
 import useAxios from "../../hooks/useAxios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuth from "../../hooks/useAuth";
+import { votePost } from "../../services/post";
 
 const Home = () => {
   const axiosSecure = useAxios();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
@@ -377,7 +383,6 @@ const Home = () => {
     {
       id: 2,
       title: 'State Management in 2025',
-      date: '2025-09-10T14:30:00',
       description: 'Exploring modern state management solutions',
       type: 'workshop',
       speaker: 'Sarah Drasner'
@@ -391,6 +396,77 @@ const Home = () => {
       speaker: 'Guillermo Rauch'
     }
   ]);
+
+  // Vote mutation
+  const voteMutation = useMutation({
+    mutationFn: ({ postId, voteType, userId }) => votePost(postId, voteType, userId),
+    onMutate: async ({ postId, voteType }) => {
+      await queryClient.cancelQueries(['posts', currentPage, searchTerm, selectedTag]);
+      const previousPosts = queryClient.getQueryData(['posts', currentPage, searchTerm, selectedTag]);
+      
+      queryClient.setQueryData(['posts', currentPage, searchTerm, selectedTag], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map(post => {
+            if (post._id !== postId) return post;
+            
+            const newVotes = { ...(post.votes || {}) };
+            const userVote = newVotes[user?.uid];
+            let upVote = post.upVote || 0;
+            let downVote = post.downVote || 0;
+            
+            // Remove previous vote if exists
+            if (userVote) {
+              if (userVote === 'upvote') upVote--;
+              else downVote--;
+            }
+            
+            // Add new vote if different from previous
+            if (!userVote || userVote !== voteType) {
+              newVotes[user?.uid] = voteType;
+              if (voteType === 'upvote') upVote++;
+              else downVote++;
+            } else {
+              // If clicking the same vote type, remove the vote
+              delete newVotes[user?.uid];
+            }
+            
+            return {
+              ...post,
+              upVote,
+              downVote,
+              votes: newVotes
+            };
+          })
+        };
+      });
+      
+      return { previousPosts };
+    },
+    onError: (err, variables, context) => {
+      console.error('Error voting:', err);
+      if (context?.previousPosts) {
+        queryClient.setQueryData(['posts', currentPage, searchTerm, selectedTag], context.previousPosts);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts', currentPage, searchTerm, selectedTag] });
+    },
+  });
+  
+  const handleVote = (voteType, postId) => {
+    if (!user) {
+      console.log('User not logged in');
+      // Optionally show login prompt here
+      return;
+    }
+    voteMutation.mutate({ 
+      postId, 
+      voteType,
+      userId: user.uid
+    });
+  };
 
   // Countdown timer component
   const CountdownTimer = ({ targetDate }) => {
@@ -446,7 +522,7 @@ const Home = () => {
     });
 
     return (
-      <div className="flex justify-center space-x-2 mt-2">
+      <div className="flex justify-center space-x-2 mt-2 text-black dark:text-white">
         {timerComponents.length ? timerComponents : <span>Event started!</span>}
       </div>
     );
@@ -782,12 +858,19 @@ const Home = () => {
                         <div className="flex items-start space-x-3 sm:space-x-4">
                           {/* Author Avatar */}
                           <img
-                            src={post.authorImage || "/default-avatar.png"}
+                            src={post?.authorImage?.includes('googleusercontent.com')
+                              ? post.authorImage.replace('s96-c', 's192-c')
+                              : post?.authorImage || "/default-avatar.svg"}
                             alt={post.authorName}
                             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/default-avatar.svg";
+                            }}
+                            referrerPolicy="no-referrer"
                           />
 
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1">
                             {/* Post Header */}
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
                               <h3 className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
@@ -813,21 +896,43 @@ const Home = () => {
                                 <span>{post.commentCount || 0} comments</span>
                               </div>
                               <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1">
-                                  <button className="p-1 hover:text-green-500">
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleVote('upvote', post._id);
+                                    }}
+                                    className={`p-2 rounded-lg transition-colors relative z-10 ${
+                                      post?.votes?.[user?.uid] === 'upvote'
+                                        ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-100'
+                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                    }`}
+                                    disabled={!user || voteMutation.isLoading}
+                                    title={user ? 'Upvote' : 'Login to vote'}
+                                  >
                                     <ArrowUp className="w-4 h-4" />
                                   </button>
-                                  <span className="text-sm">{post.upVote || 0}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <button className="p-1 hover:text-red-500">
+                                  
+                                  <span className="font-semibold text-gray-900 dark:text-white min-w-[1.5rem] text-center">
+                                    {(post?.upVote || 0) - (post?.downVote || 0)}
+                                  </span>
+                                  
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleVote('downvote', post._id);
+                                    }}
+                                    className={`p-2 rounded-lg transition-colors ${
+                                      post?.votes?.[user?.uid] === 'downvote'
+                                        ? 'bg-red-100 dark:bg-red-800 text-red-600 dark:text-red-100'
+                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                    }`}
+                                    disabled={!user || voteMutation.isLoading}
+                                    title={user ? 'Downvote' : 'Login to vote'}
+                                  >
                                     <ArrowDown className="w-4 h-4" />
                                   </button>
-                                  <span className="text-sm">{post.downVote || 0}</span>
                                 </div>
-                                <span className="text-sm font-medium hidden sm:inline">
-                                  Net: {(post.upVote || 0) - (post.downVote || 0)}
-                                </span>
                               </div>
                             </div>
                           </div>
@@ -988,14 +1093,14 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeResourceTab === "articles" &&
                 resources.articles.map((article) => (
-                  <div key={article.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col">
+                  <div key={article.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4  transition-shadow h-full flex flex-col bg-white dark:bg-gray-800">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {article.title}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-3 flex-grow">
                       {article.description}
                     </p>
-                    <div className="flex justify-between items-center mt-auto pt-2">
+                    <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-600">
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         By {article.author}
                       </span>
@@ -1013,14 +1118,14 @@ const Home = () => {
 
               {activeResourceTab === "tutorials" &&
                 resources.tutorials.map((tutorial) => (
-                  <div key={tutorial.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col">
+                  <div key={tutorial.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col bg-white dark:bg-gray-800">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {tutorial.title}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-3 flex-grow">
                       {tutorial.description}
                     </p>
-                    <div className="flex justify-between items-center mt-auto pt-2">
+                    <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         {tutorial.duration} • {tutorial.level}
                       </span>
@@ -1038,7 +1143,7 @@ const Home = () => {
 
               {activeResourceTab === "faqs" &&
                 resources.faqs.map((faq) => (
-                  <div key={faq.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full">
+                  <div key={faq.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col bg-white dark:bg-gray-800">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {faq.question}
                     </h3>

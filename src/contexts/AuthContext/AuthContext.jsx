@@ -100,20 +100,22 @@ export const AuthProvider = ({ children }) => {
         try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
+            const userData = userDoc.data();
             setCurrentUser({
               uid: user.uid,
               email: user.email,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              ...userDoc.data()
+              displayName: user.displayName || userData.displayName || user.email.split('@')[0],
+              photoURL: user.photoURL || userData.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=random`,
+              role: userData.role || 'user',
+              ...userData
             });
           } else {
             setCurrentUser({
               uid: user.uid,
               email: user.email,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              role: 'user' // Default role
+              displayName: user.displayName || user.email.split('@')[0],
+              photoURL: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=random`,
+              role: 'user'
             });
           }
         } catch (error) {
@@ -121,9 +123,9 @@ export const AuthProvider = ({ children }) => {
           setCurrentUser({
             uid: user.uid,
             email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            role: 'user' // Default role
+            displayName: user.displayName || user.email.split('@')[0],
+            photoURL: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=random`,
+            role: 'user'
           });
         }
       } else {

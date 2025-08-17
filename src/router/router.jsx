@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router";
+import { ErrorBoundary } from "../components/ErrorPage";
+import ErrorPage from "../components/ErrorPage";
 import RootLayout from "../Layouts/RootLayout";
 import Home from "../Pages/Home/Home";
 import PostDetails from "../Pages/PostDetails/PostDetails";
@@ -20,19 +22,20 @@ import BecomeMember from "../Pages/BecomeMember";
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
+    element: <ErrorBoundary><RootLayout /></ErrorBoundary>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        Component: Home,
+        element: <Home />,
       },
       {
         path: "/post/:id",
-        Component: PostDetails,
+        element: <PostDetails />,
       },
       {
         path: "/events/:id",
-        Component: EventDetails,
+        element: <EventDetails />,
       },
       {
         path: "/create-post",
@@ -79,7 +82,8 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    Component: AuthLayout,
+    element: <ErrorBoundary><AuthLayout /></ErrorBoundary>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/login",
@@ -90,5 +94,9 @@ export const router = createBrowserRouter([
         element: <Register />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
   },
 ]);

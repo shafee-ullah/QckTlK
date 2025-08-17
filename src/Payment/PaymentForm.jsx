@@ -109,15 +109,15 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 border rounded shadow">
-      <h2 className="text-xl font-semibold mb-4  dark:text-blue-600">Complete Your Payment</h2>
+    <div className="max-w-md mx-auto p-6 border-gray-300 dark:border-gray-600 rounded-md shadow-sm">
+      {/* <h2 className="text-xl font-semibold mb-4  dark:text-blue-600">Complete Your Payment</h2> */}
 
       {isLoading ? (
         <p>Loading payment info...</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <CardElement
-            className="p-4 border rounded"
+            className="p-4 border-2 border-gray-300 dark:border-gray-600 rounded-md shadow-sm"
             options={{
               style: {
                 base: {

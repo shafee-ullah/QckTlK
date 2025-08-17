@@ -130,7 +130,24 @@ button[type="submit"] {
 /* Force white text on active sort buttons */
 .bg-blue-600.text-white {
     color: white !important;
-  }
+}
+
+/* Force white text in login prompt */
+.text-white-force {
+  color: white !important;
+}
+
+/* Ensure clock text is always blue-500 */
+.text-blue-500 {
+  color: #3b82f6 !important;
+}
+
+/* Ensure button text stays white in both light and dark modes */
+.bg-gradient-to-r.text-white,
+.bg-gradient-to-r.hover\:from-blue-700.text-white,
+.bg-gradient-to-r.hover\:to-indigo-700.text-white {
+  color: white !important;
+}
 
 /* Navbar shadow */
 .navbar-shadow {
