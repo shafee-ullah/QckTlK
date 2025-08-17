@@ -81,6 +81,14 @@ const Navbar = () => {
                 Become a Member
               </Link>
             )}
+              {user && (
+              <Link
+                to="/membership"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+              >
+                Membership
+              </Link>
+            )}
               <Link
               to="/about"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
@@ -94,14 +102,7 @@ const Navbar = () => {
               Contact
             </Link>
           
-            {user && (
-              <Link
-                to="/membership"
-                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
-              >
-                Membership
-              </Link>
-            )}
+          
           </div>
 
           {/* Right Side (Desktop) */}

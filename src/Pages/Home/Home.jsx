@@ -18,7 +18,9 @@ import {
   RefreshCw,
   HelpCircle,
   Check,
-  RotateCw
+  RotateCw,
+  Clock,
+  Video
 } from "lucide-react";
 import useAxios from "../../hooks/useAxios";
 
@@ -292,6 +294,94 @@ const Home = () => {
     });
   };
 
+  // Add events state
+  const [events, setEvents] = useState([
+    {
+      id: 1,
+      title: 'React 19 Deep Dive',
+      date: '2025-08-25T15:00:00',
+      description: 'Learn about the latest features in React 19',
+      type: 'webinar',
+      speaker: 'Dan Abramov'
+    },
+    {
+      id: 2,
+      title: 'State Management in 2025',
+      date: '2025-09-10T14:30:00',
+      description: 'Exploring modern state management solutions',
+      type: 'workshop',
+      speaker: 'Sarah Drasner'
+    },
+    {
+      id: 3,
+      title: 'Building Scalable Apps',
+      date: '2025-09-22T16:00:00',
+      description: 'Architecture patterns for large-scale applications',
+      type: 'conference',
+      speaker: 'Guillermo Rauch'
+    }
+  ]);
+
+  // Countdown timer component
+  const CountdownTimer = ({ targetDate }) => {
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft());
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }, [targetDate]);
+
+    function calculateTimeLeft() {
+      const difference = new Date(targetDate) - new Date();
+      let timeLeft = {};
+
+      if (difference > 0) {
+        timeLeft = {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        };
+      }
+
+      return timeLeft;
+    }
+
+    const timerComponents = [];
+    const timeUnits = [
+      { label: 'Days', value: timeLeft.days },
+      { label: 'Hours', value: timeLeft.hours },
+      { label: 'Minutes', value: timeLeft.minutes },
+      { label: 'Seconds', value: timeLeft.seconds }
+    ];
+
+    timeUnits.forEach((unit, index) => {
+      if (!unit.value && unit.value !== 0) {
+        return;
+      }
+
+      timerComponents.push(
+        <div key={index} className="flex flex-col items-center mx-1">
+          <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            {String(unit.value).padStart(2, '0')}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {unit.label}
+          </span>
+        </div>
+      );
+    });
+
+    return (
+      <div className="flex justify-center space-x-2 mt-2">
+        {timerComponents.length ? timerComponents : <span>Event started!</span>}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Banner Section */}
@@ -427,7 +517,7 @@ const Home = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
-          {/* Sidebar - Hidden on mobile, shown on lg+ */}
+          {/* Left Sidebar - Existing content */}
           <div className="hidden lg:block lg:col-span-1 space-y-6">
             {/* Tags Section */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
@@ -555,7 +645,8 @@ const Home = () => {
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
+            {/* Existing forum posts content */}
             {/* Sort Controls */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -728,6 +819,53 @@ const Home = () => {
                 )}
               </>
             )}
+          </div>
+
+          {/* Right Sidebar - New Events Section */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center mb-4">
+                <Calendar className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-500" />
+                Upcoming Events & Webinars
+              </h3>
+              
+              <div className="space-y-4">
+                {events.map((event) => (
+                  <div 
+                    key={event.id} 
+                    className="border-l-4 border-blue-500 pl-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-r transition-colors"
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-blue-900/20 dark:bg-blue-300 p-2 rounded-lg mr-3">
+                        <Video className="w-5 h-5 text-blue-600 dark:text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white">{event.title}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{event.speaker}</p>
+                        <div className="flex items-center text-xs text-blue-600 dark:text-blue-600 mt-1">
+                          <Clock className="w-3 h-3 mr-1 text-blue-600" />
+                          {new Date(event.date).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </div>
+                        <CountdownTimer targetDate={event.date} />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{event.description}</p>
+                    <button className="mt-2 text-sm text-blue-600 dark:text-blue-600 hover:underline">
+                      Learn More →
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* <button className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium">
+                View All Events
+              </button> */}
+            </div>
           </div>
         </div>
       </div>
