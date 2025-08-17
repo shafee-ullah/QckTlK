@@ -42,6 +42,76 @@ const Home = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [activeResourceTab, setActiveResourceTab] = useState("articles");
+
+  const resources = {
+    articles: [
+      {
+        id: 1,
+        title: 'Getting Started with React',
+        description: 'Learn the basics of React and how to build your first app',
+        author: 'John Richards',
+        url: 'https://www.w3schools.com/react/react_getstarted.asp'
+      },
+      {
+        id: 2,
+        title: 'React Hooks Tutorial',
+        description: 'Master the use of React Hooks to manage state and side effects',
+        author: 'Jane Doe',
+        url: 'https://www.w3schools.com/react/react_hooks.asp'
+      },
+      {
+        id: 3,
+        title: 'React Router Tutorial',
+        description: 'Learn how to use React Router to manage client-side routing',
+        author: 'Bob Smith',
+        url: 'https://www.w3schools.com/react/react_router.asp'
+      }
+    ],
+    tutorials: [
+      {
+        id: 1,
+        title: 'React Crash Course',
+        description: 'Learn React from scratch in this comprehensive tutorial',
+        duration: '3 hours',
+        level: 'Beginner',
+        url: 'https://youtu.be/LDB4uaJ87e0?si=IAMFcD0zn-5dswEl'
+      },
+      {
+        id: 2,
+        title: 'React Advanced Tutorial',
+        description: 'Take your React skills to the next level with this advanced tutorial',
+        duration: '2 hours',
+        level: 'Advanced',
+        url: 'https://youtu.be/dCLhUialKPQ?si=5eqZ7MVEvtI_Gb9f'
+      },
+      {
+        id: 3,
+        title: 'React and Redux Tutorial',
+        description: 'Learn how to use React and Redux together to build scalable apps',
+        duration: '1 hour 37 minutes',
+        level: 'Intermediate',
+        url: 'https://youtu.be/qhll3DXuLHI?si=Ni4NAzO57ovtLoN7'
+      }
+    ],
+    faqs: [
+      {
+        id: 1,
+        question: 'What is React?',
+        answer: 'React is a JavaScript library for building user interfaces.'
+      },
+      {
+        id: 2,
+        question: 'What is JSX?',
+        answer: 'JSX is a syntax extension for JavaScript that allows you to write HTML-like code in your JavaScript files.'
+      },
+      {
+        id: 3,
+        question: 'What is a React component?',
+        answer: 'A React component is a small, reusable piece of code that represents a UI element.'
+      }
+    ]
+  };
 
   const questions = [
     {
@@ -868,6 +938,115 @@ const Home = () => {
               {/* <button className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium">
                 View All Events
               </button> */}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-width Resources Section */}
+      <div className="bg-gray-50 dark:bg-gray-900 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Helpful Resources
+              </h2>
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                <button
+                  onClick={() => setActiveResourceTab("articles")}
+                  className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                    activeResourceTab === "articles"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  Articles
+                </button>
+                <button
+                  onClick={() => setActiveResourceTab("tutorials")}
+                  className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                    activeResourceTab === "tutorials"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  Tutorials
+                </button>
+                <button
+                  onClick={() => setActiveResourceTab("faqs")}
+                  className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                    activeResourceTab === "faqs"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  FAQs
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeResourceTab === "articles" &&
+                resources.articles.map((article) => (
+                  <div key={article.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      {article.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-3 flex-grow">
+                      {article.description}
+                    </p>
+                    <div className="flex justify-between items-center mt-auto pt-2">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        By {article.author}
+                      </span>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-600 hover:underline text-sm whitespace-nowrap ml-2"
+                      >
+                        Read More →
+                      </a>
+                    </div>
+                  </div>
+                ))}
+
+              {activeResourceTab === "tutorials" &&
+                resources.tutorials.map((tutorial) => (
+                  <div key={tutorial.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      {tutorial.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-3 flex-grow">
+                      {tutorial.description}
+                    </p>
+                    <div className="flex justify-between items-center mt-auto pt-2">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {tutorial.duration} • {tutorial.level}
+                      </span>
+                      <a
+                        href={tutorial.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-600 hover:underline text-sm whitespace-nowrap ml-2"
+                      >
+                        Watch Now →
+                      </a>
+                    </div>
+                  </div>
+                ))}
+
+              {activeResourceTab === "faqs" &&
+                resources.faqs.map((faq) => (
+                  <div key={faq.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow h-full">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      {faq.question}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
