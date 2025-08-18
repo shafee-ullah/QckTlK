@@ -4,7 +4,7 @@
 // import { Navigate, useNavigate } from 'react-router';
 
 // const axiosSecure = axios.create({
-//     baseURL: `http://localhost:3000`
+//     baseURL: `https://qcktlk.vercel.app`
 // });
 
 // const  useAxiosSecure= () => {
@@ -26,7 +26,7 @@
 // import useAuth from './useAuth';
 
 // const axiosSecure = axios.create({
-//   baseURL: `http://localhost:3000`, // your backend
+//   baseURL: `https://qcktlk.vercel.app`, // your backend
 // });
 
 // const useAxiosSecure = () => {

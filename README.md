@@ -1,5 +1,7 @@
 # 🚀 QckTlk - Real-time Forum Application
 
+[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-blue?style=for-the-badge)](https://qcktlk.netlify.app/)
+
 ![QckTlk Cover](./public/QckTlk%20Cover.png)
 *QckTlk - Where conversations come to life*
 
@@ -23,9 +25,9 @@
 
 - **💬 Rich Content**
   - Markdown support
-  - Image uploads
+  - Educational Contents
   - Code syntax highlighting
-  - Emoji reactions
+  
 
 
 ## 🛠️ Technologies Used
@@ -80,13 +82,7 @@
    yarn start
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## 📸 Screenshots
-
-### Homepage
-![QckTlk Homepage](./public/qcktlk.png)
-*Homepage featuring recent discussions and trending topics*
 
 ## 🤝 Contributing
 
@@ -96,9 +92,4 @@ Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTIN
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
 
-## 🙏 Acknowledgments
 
-- [React](https://reactjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [Socket.IO](https://socket.io/)

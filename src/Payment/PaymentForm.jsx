@@ -20,7 +20,7 @@ const PaymentForm = () => {
   const { data: clientSecret, isLoading } = useQuery({
     queryKey: ["clientSecret", amount],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3000/create-payment-intent", {
+      const res = await fetch("https://qcktlk.vercel.app/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount }),
@@ -72,7 +72,7 @@ const PaymentForm = () => {
         setSuccess("Payment successful! Upgrading your membership...");
         try {
           // Upgrade membership
-          await fetch("http://localhost:3000/api/users/upgrade", {
+          await fetch("https://qcktlk.vercel.app/api/users/upgrade", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const PaymentForm = () => {
           });
 
           // Record payment
-          await fetch("http://localhost:3000/api/payments", {
+          await fetch("https://qcktlk.vercel.app/api/payments", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

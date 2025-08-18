@@ -1024,7 +1024,7 @@ const UsersTab = ({ users, loading, fetchUsers }) => {
     try {
       // Ensure we're using the correct API URL based on the environment
       const apiUrl = import.meta.env.DEV 
-        ? `http://localhost:3000/api/users/${userId}/role`
+        ? `https://qcktlk.vercel.app/api/users/${userId}/role`
         : `/api/users/${userId}/role`;
       
       const response = await fetch(apiUrl, {
