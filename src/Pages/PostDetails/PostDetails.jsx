@@ -147,7 +147,7 @@ const PostDetails = () => {
       console.log('User not logged in');
       return;
     }
-    console.log('Voting:', { postId: id, voteType, userId: user.uid });
+    // console.log('Voting:', { postId: id, voteType, userId: user.uid });
     voteMutation.mutate({ 
       postId: id, 
       voteType,
@@ -221,7 +221,7 @@ const PostDetails = () => {
   // Debug function to check if clicks are working
   const handleDebugClick = (e) => {
     if (e) e.stopPropagation();
-    console.log('Debug button clicked!');
+    // console.log('Debug button clicked!');
     alert('Debug button works!');
   };
 

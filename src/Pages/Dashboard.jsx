@@ -11,6 +11,7 @@ import {
   BarChart3,
   Users,
 } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import useAuth from "../hooks/useAuth";
 import useAxios from "../hooks/useAxios";
 
@@ -124,8 +125,10 @@ const Dashboard = () => {
     { id: "add-post", name: "Add Post", icon: Plus },
     { id: "comments", name: "Comments", icon: MessageSquare },
     { id: "payments", name: "Payments", icon: CreditCard },
-    { id: "users", name: "Manage Users", icon: Users },
-    { id: "stats", name: "Statistics", icon: BarChart3 },
+    ...(profile?.role === 'admin' ? [
+      { id: "users", name: "Manage Users", icon: Users },
+      { id: "stats", name: "Statistics", icon: BarChart3 }
+    ] : []),
   ];
 
   const renderTabContent = () => {
@@ -141,8 +144,18 @@ const Dashboard = () => {
       case "payments":
         return <PaymentsTab payments={payments} />;
       case "users":
+        if (profile?.role !== 'admin') {
+          // Redirect to profile if not admin
+          setActiveTab('profile');
+          return null;
+        }
         return <UsersTab users={users} loading={loadingUsers} fetchUsers={fetchAllUsers} />;
       case "stats":
+        if (profile?.role !== 'admin') {
+          // Redirect to profile if not admin
+          setActiveTab('profile');
+          return null;
+        }
         return <StatsTab />;
       default:
         return <ProfileTab profile={profile} />;
@@ -152,20 +165,20 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <Link
+              {/* <Link
                 to="/"
                 className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
               >
                 <Home className="w-5 h-5" />
                 <span>Back to Home</span>
-              </Link>
+              </Link> */}
             </div>
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-lg text-gray-500 dark:text-gray-200">
                 Welcome back,{" "}
                 {profile.displayName || profile.name || user.email}
               </div>
@@ -345,7 +358,7 @@ const ProfileTab = ({ profile }) => (
         </button> */}
         {profile.badge !== "Gold" && (
           <Link to="/membership">
-            <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+            <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-white">
               Upgrade to Gold
             </button>
           </Link>
@@ -764,9 +777,6 @@ const CommentsTab = () => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [selectedComment, setSelectedComment] = useState(null);
-  const [reportReason, setReportReason] = useState("");
   const { user } = useAuth();
   const axiosSecure = useAxios();
 
@@ -830,30 +840,6 @@ const CommentsTab = () => {
     }
   };
 
-  const handleReportComment = (comment) => {
-    setSelectedComment(comment);
-    setShowReportModal(true);
-  };
-
-  const submitReport = async () => {
-    if (!reportReason.trim()) {
-      alert("Please select a reason for reporting");
-      return;
-    }
-
-    try {
-      await axiosSecure.post(`/api/comments/${selectedComment._id}/report`, {
-        reporterEmail: user.email,
-        reason: reportReason,
-      });
-      alert("Comment reported successfully");
-      setShowReportModal(false);
-      setSelectedComment(null);
-      setReportReason("");
-    } catch {
-      alert("Failed to report comment");
-    }
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -934,12 +920,6 @@ const CommentsTab = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => handleReportComment(comment)}
-                        className="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 text-xs rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
-                      >
-                        Report
-                      </button>
-                      <button
                         onClick={() =>
                           handleDeleteComment(comment._id, comment.postId)
                         }
@@ -965,76 +945,14 @@ const CommentsTab = () => {
         </div>
       )}
 
-      {/* Report Modal */}
-      {showReportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Report Comment
-            </h3>
-
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                Comment by:{" "}
-                <span className="font-medium">
-                  {selectedComment?.authorName}
-                </span>
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                "{selectedComment?.comment}"
-              </p>
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Reason for reporting:
-              </label>
-              <select
-                value={reportReason}
-                onChange={(e) => setReportReason(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              >
-                <option value="">Select a reason...</option>
-                <option value="Spam">Spam</option>
-                <option value="Inappropriate content">
-                  Inappropriate content
-                </option>
-                <option value="Harassment">Harassment</option>
-                <option value="False information">False information</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowReportModal(false);
-                  setSelectedComment(null);
-                  setReportReason("");
-                }}
-                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={submitReport}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                Submit Report
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Comment Management Tips */}
-      <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+      <div className="mt-8 bg-blue-50 dark:bg-blue-600 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
           Comment Management Tips
         </h4>
-        <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+        <ul className="text-sm text-blue-700 dark:text-blue-100 space-y-1">
           <li>• You can delete any comment on your posts</li>
-          <li>• Report inappropriate comments for review</li>
           <li>• Comments are automatically sorted by date</li>
           <li>• Deleted comments cannot be recovered</li>
         </ul>
@@ -1249,14 +1167,14 @@ const UsersTab = ({ users, loading, fetchUsers }) => {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {user.role !== 'admin' && (
                         <button
                           onClick={() => updateUserRole(user._id, 'admin')}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                          className="px-2 py-1 text-xs bg-blue-50 dark:bg-blue-600 text-blue-600 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-md transition-colors whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] sm:max-w-none"
                           title="Make Admin"
                         >
-                          Make Admin
+                          <span className="hidden sm:inline">Make </span>Admin
                         </button>
                       )}
                     </td>
@@ -1271,16 +1189,113 @@ const UsersTab = ({ users, loading, fetchUsers }) => {
   );
 };
 
-const StatsTab = () => (
-  <div>
-    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-      Statistics
-    </h3>
-    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-      <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-      <p>Statistics feature coming soon...</p>
+const StatsTab = () => {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const axiosSecure = useAxios();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axiosSecure.get('/api/statistics');
+        setStats(response.data);
+      } catch (err) {
+        console.error('Error fetching statistics:', err);
+        setError('Failed to load statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [axiosSecure]);
+
+  const chartData = stats ? [
+    { name: 'Posts', value: stats.posts, color: '#4f46e5' },
+    { name: 'Comments', value: stats.comments, color: '#10b981' },
+    { name: 'Users', value: stats.users, color: '#f59e0b' },
+  ] : [];
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border-l-4 border-red-500 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 p-6">
+      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Site Statistics
+      </h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-600  p-6">
+          <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Posts</div>
+          <div className="mt-1 text-3xl font-semibold text-indigo-600 dark:text-indigo-400">
+            {stats.posts.toLocaleString()}
+          </div>
+        </div>
+        
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-600 p-6">
+          <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Comments</div>
+          <div className="mt-1 text-3xl font-semibold text-green-600 dark:text-green-400">
+            {stats.comments.toLocaleString()}
+          </div>
+        </div>
+        
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-600 p-6">
+          <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Users</div>
+          <div className="mt-1 text-3xl font-semibold text-yellow-600 dark:text-yellow-400">
+            {stats.users.toLocaleString()}
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-600 p-6">
+        <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Distribution:</h4>
+        <div className="h-64 flex items-center justify-center">
+          <PieChart width={400} height={250}>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(value) => value.toLocaleString()} />
+            <Legend />
+          </PieChart>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Dashboard;

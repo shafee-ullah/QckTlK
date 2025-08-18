@@ -1,12 +1,104 @@
-# React + Vite
+# 🚀 QckTlk - Real-time Forum Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![QckTlk Cover](./public/QckTlk%20Cover.png)
+*QckTlk - Where conversations come to life*
 
-Currently, two official plugins are available:
+## ✨ Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **🌐 Real-time Discussions**
+  - Instant message updates
+  - Real-time user presence
 
-## Expanding the ESLint configuration
+- **🔐 Secure Authentication**
+  - Email/Password login
+  - Social media integration
+  - Protected routes
+  - Role-based access control
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **📱 Modern UI/UX**
+  - Responsive design
+  - Dark/Light theme support
+  - Intuitive navigation
+  - Clean, minimalist interface
+
+- **💬 Rich Content**
+  - Markdown support
+  - Image uploads
+  - Code syntax highlighting
+  - Emoji reactions
+
+
+## 🛠️ Technologies Used
+
+### Frontend
+- React.js
+- Tailwind CSS
+- Redux Toolkit
+- Socket.IO Client
+- React Query
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- JWT Authentication
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v16 or later)
+- npm or yarn
+- MongoDB Atlas account or local MongoDB instance
+
+### Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/qcktlk.git
+   cd qcktlk
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Set up environment variables
+   Create a `.env` file in the root directory:
+   ```env
+   REACT_APP_API_URL=http://localhost:5000
+   REACT_APP_SOCKET_URL=ws://localhost:5000
+   # Add other environment variables here
+   ```
+
+4. Start the development server
+   ```bash
+   npm start
+   # or
+   yarn start
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## 📸 Screenshots
+
+### Homepage
+![QckTlk Homepage](./public/qcktlk.png)
+*Homepage featuring recent discussions and trending topics*
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTING.md) to get started.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Socket.IO](https://socket.io/)

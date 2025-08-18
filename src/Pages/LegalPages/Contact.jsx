@@ -26,7 +26,7 @@ const Contact = () => {
     
     // Simulate form submission
     setTimeout(() => {
-      console.log('Form submitted:', formData);
+      // console.log('Form submitted:', formData);
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({

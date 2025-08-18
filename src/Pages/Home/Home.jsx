@@ -207,19 +207,19 @@ const Home = () => {
           return new URLSearchParams(params).toString();
         }
       });
-      console.log('Received posts data:', {
-        dataLength: response.data?.data?.length,
-        firstPost: response.data?.data?.[0] ? {
-          title: response.data.data[0].title,
-          upVote: response.data.data[0].upVote,
-          downVote: response.data.data[0].downVote,
-          postTime: response.data.data[0].postTime
-        } : null,
-        sortParam: params.sort,
-        currentPage: params.page,
-        total: response.data?.total,
-        totalPages: response.data?.totalPages,
-      });
+      // console.log('Received posts data:', {
+      //   dataLength: response.data?.data?.length,
+      //   firstPost: response.data?.data?.[0] ? {
+      //     title: response.data.data[0].title,
+      //     upVote: response.data.data[0].upVote,
+      //     downVote: response.data.data[0].downVote,
+      //     postTime: response.data.data[0].postTime
+      //   } : null,
+      //   sortParam: params.sort,
+      //   currentPage: params.page,
+      //   total: response.data?.total,
+      //   totalPages: response.data?.totalPages,
+      // });
       return response.data;
     },
     keepPreviousData: true,
@@ -231,31 +231,31 @@ const Home = () => {
   
   // Debug logging
   useEffect(() => {
-    if (postsData) {
-      console.log('Pagination Debug:', {
-        postsData: {
-          data: postsData.data?.length,
-          total: postsData.total,
-          totalPages: postsData.totalPages,
-          currentPage: postsData.currentPage,
-          hasMore: postsData.hasMore,
-        },
-        sortBy,
-        currentPage,
-      });
+    // if (postsData) {
+    //   console.log('Pagination Debug:', {
+    //     postsData: {
+    //       data: postsData.data?.length,
+    //       total: postsData.total,
+    //       totalPages: postsData.totalPages,
+    //       currentPage: postsData.currentPage,
+    //       hasMore: postsData.hasMore,
+    //     },
+    //     sortBy,
+    //     currentPage,
+    //   });
       
-      // Log the first post's vote info if available
-      if (postsData.data?.length > 0) {
-        const firstPost = postsData.data[0];
-        console.log('First post info:', {
-          title: firstPost.title,
-          upVote: firstPost.upVote,
-          downVote: firstPost.downVote,
-          netVotes: (firstPost.upVote || 0) - (firstPost.downVote || 0),
-          postTime: firstPost.postTime,
-        });
-      }
-    }
+    //   // Log the first post's vote info if available
+    //   if (postsData.data?.length > 0) {
+    //     const firstPost = postsData.data[0];
+    //     console.log('First post info:', {
+    //       title: firstPost.title,
+    //       upVote: firstPost.upVote,
+    //       downVote: firstPost.downVote,
+    //       netVotes: (firstPost.upVote || 0) - (firstPost.downVote || 0),
+    //       postTime: firstPost.postTime,
+    //     });
+    //   }
+    // }
   }, [postsData, currentPage, pageCount, allPosts, postsLoading]);
 
   const handlePageClick = (event) => {
@@ -332,8 +332,8 @@ const Home = () => {
   };
 
   const handleSortChange = (newSort) => {
-    console.log('Sort changed to:', newSort);
-    console.log('Previous sort state:', sortBy);
+    // console.log('Sort changed to:', newSort);
+    // console.log('Previous sort state:', sortBy);
     setSortBy(newSort);
     setCurrentPage(0); // Reset to first page when changing sort
     
@@ -348,7 +348,7 @@ const Home = () => {
       page: 1, // Reset to first page
       limit: postsPerPage,
     };
-    console.log('Expected API request with params:', params);
+    // console.log('Expected API request with params:', params);
   };
 
   const clearAllFilters = () => {
@@ -457,7 +457,7 @@ const Home = () => {
   
   const handleVote = (voteType, postId) => {
     if (!user) {
-      console.log('User not logged in');
+      // console.log('User not logged in');
       // Optionally show login prompt here
       return;
     }
@@ -654,12 +654,12 @@ const Home = () => {
       </section>
 
       {/* Real-time Notification */}
-      {showNewPostsNotification && (
+      {/* {showNewPostsNotification && (
         <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-bounce">
           <RefreshCw className="w-4 h-4 animate-spin" />
           <span>New posts available! Refreshing...</span>
         </div>
-      )}
+      )} */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -1034,7 +1034,7 @@ const Home = () => {
                       to={`/events/${event.id}`}
                       className="inline-flex items-center mt-2 text-sm text-blue-600 dark:text-blue-600 hover:underline"
                     >
-                      Learn More <span className="ml-1">→</span>
+                      See More <span className="ml-1">→</span>
                     </Link>
                   </div>
                 ))}

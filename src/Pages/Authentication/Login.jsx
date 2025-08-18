@@ -19,18 +19,28 @@ const Login = () => {
   const from = location.state?.from?.pathname || location.state?.from || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [shake, setShake] = useState(false);
   
   // Add a message if redirected from a protected route
   const redirectMessage = location.state?.from ? 'Please log in to continue' : '';
+  
+  // Shake animation effect
+  const triggerShake = () => {
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+  };
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
       const result = await signIn(data.email, data.password);
-      console.log(result.user);
+      // console.log(result.user);
       navigate(from);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      setLoginError('Invalid email or password. Please try again.');
+      triggerShake();
     } finally {
       setIsLoading(false);
     }
@@ -71,9 +81,22 @@ const Login = () => {
             <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white text-center">
               Welcome Back
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-sm text-center">
+            <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-4">
               {redirectMessage || 'Sign in to your account'}
             </p>
+            {loginError && (
+              <div 
+                className={`bg-red-300 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-r-lg transition-all duration-300 transform ${shake ? 'animate-shake' : ''}`}
+                role="alert"
+              >
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <p className="font-medium">{loginError}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Form */}
@@ -96,6 +119,7 @@ const Login = () => {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: "Invalid email address",
                       },
+                      onChange: () => setLoginError('')
                     })}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your email"
@@ -125,6 +149,7 @@ const Login = () => {
                         value: 6,
                         message: "Password must be at least 6 characters",
                       },
+                      onChange: () => setLoginError('')
                     })}
                     className="block w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your password"

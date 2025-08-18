@@ -14,37 +14,37 @@ const Navbar = () => {
 
   // Debug: Log user object
   useEffect(() => {
-    console.log('Current user in Navbar:', user);
-    if (user) {
-      console.log('User photoURL:', user.photoURL);
-      console.log('User displayName:', user.displayName);
-    }
+    // console.log('Current user in Navbar:', user);
+    // if (user) {
+    //   console.log('User photoURL:', user.photoURL);
+    //   console.log('User displayName:', user.displayName);
+    // }
   }, [user]);
 
   // Toggle dropdown and handle outside clicks
   useEffect(() => {
     function handleClickOutside(event) {
-      console.log('Click detected outside');
+      // console.log('Click detected outside');
       if (profileRef.current && !profileRef.current.contains(event.target)) {
-        console.log('Closing dropdown');
+        // console.log('Closing dropdown');
         setProfileDropdownOpen(false);
       }
     }
     
     // Add event listener when dropdown is open
     if (profileDropdownOpen) {
-      console.log('Adding click listener');
+      // console.log('Adding click listener');
       document.addEventListener('mousedown', handleClickOutside);
     }
     
     return () => {
-      console.log('Removing click listener');
+      // console.log('Removing click listener');
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [profileDropdownOpen]);  // Only re-run when profileDropdownOpen changes
 
   const handleSignOut = async () => {
-    console.log('Sign out button clicked');
+    // console.log('Sign out button clicked');
     try {
       await logOut();
       setProfileDropdownOpen(false);

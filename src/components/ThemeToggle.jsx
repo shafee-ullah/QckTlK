@@ -9,9 +9,9 @@ const ThemeToggle = () => {
     <button
       onClick={toggleTheme}
       className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-        isDarkMode ? 'focus:ring-blue-500' : 'focus:ring-yellow-500'
+        isDarkMode ? 'focus:ring-blue-500' : 'focus:ring-amber-400'
       } ${
-        isDarkMode ? 'bg-blue-600' : 'bg-yellow-400'
+        isDarkMode ? 'bg-blue-600' : 'bg-amber-400'
       }`}
       role="switch"
       aria-checked={isDarkMode}
@@ -27,7 +27,7 @@ const ThemeToggle = () => {
       {/* Icons */}
       <Sun 
         className={`absolute left-1 w-3 h-3 transition-opacity duration-300  ${
-          isDarkMode ? 'opacity-0' : 'opacity-100 text-yellow-500'
+          isDarkMode ? 'opacity-0' : 'opacity-100 text-yellow-100'
         }`}
       />
       <Moon 
